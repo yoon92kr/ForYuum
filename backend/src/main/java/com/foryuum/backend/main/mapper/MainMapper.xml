@@ -1,0 +1,7 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="main">
+    <select id="GET_USER_INFO" parameterType="HashMap" resultType="HashMap">
+        SELECT * FROM TB_USER_INFO WHERE USER_ID = #{id}
+    </select>
+</mapper>
