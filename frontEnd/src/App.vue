@@ -1,13 +1,13 @@
+<template>
+  <v-app>
+    <Header />
+
+    <v-main>
+      <router-view />
+    </v-main>
+  </v-app>
+</template>
+
 <script setup>
-import { RouterLink, RouterView } from "vue-router";
 import Header from "./components/layout/Header.vue";
 </script>
-
-<template>
-  <div id="app">
-    <Header />
-    <div id="content">
-      <RouterView />
-    </div>
-  </div>
-</template>

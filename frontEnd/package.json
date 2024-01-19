@@ -2,21 +2,28 @@
   "name": "frontend",
   "version": "0.0.0",
   "private": true,
-  "type": "module",
   "scripts": {
-    "dev": "vite",
+    "serve": "vite preview",
     "build": "vite build",
+    "dev": "vite",
     "preview": "vite preview"
   },
   "dependencies": {
+    "@mdi/font": "5.9.55",
     "@popperjs/core": "^2.11.8",
     "create-vite": "^5.1.0",
     "pinia": "^2.1.7",
+    "roboto-fontface": "*",
     "vue": "^3.4.14",
-    "vue-router": "^4.2.5"
+    "vue-router": "^4.2.5",
+    "vuetify": "npm:@vuetify/nightly@next",
+    "webfontloader": "^1.0.0"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^4.5.2",
-    "vite": "^5.0.10"
-  }
+    "vite": "^5.0.10",
+    "vite-plugin-vuetify": "^1.0.0-alpha.12",
+    "vue-cli-plugin-vuetify": "~2.5.8"
+  },
+  "type": "module"
 }

@@ -1,0 +1,1 @@
+import{_ as t}from"./_plugin-vue_export-helper-x3n3nnut.js";import{i as e,k as s,aD as a}from"./index-u8H5-vEg.js";const r={};function c(o,i){return s(),e(a,{class:"mx-auto my-8","max-width":"344",title:"개발 미정",subtitle:"언제 개발 될 지 모릅니다...",link:"",disabled:""})}const l=t(r,[["render",c]]);export{l as default};
