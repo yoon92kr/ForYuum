@@ -1,0 +1,356 @@
+/* Common */
+html, body {
+	position: relative;
+	width: 100%;
+	height: 100%;
+	font-family: "Noto Sans KR", "본고딕", "Nanum Gothic", "Malgun Gothic",
+		sans-serif;
+	font-size: 16px;
+	font-style: normal;
+	font-weight: 300;
+	line-height: 1;
+	letter-spacing: -0.025em;
+	color: #424242;
+	word-wrap: break-word;
+	word-break: keep-all;
+	overflow: hidden;
+}
+
+h1, h2, h3, h4, h5, h6, p, ul, ol, dl, dt, dd {
+	margin: 0;
+	padding: 0;
+}
+
+ul, ol {
+	list-style: none;
+}
+
+mark {
+	background: none;
+	color: inherit;
+}
+
+a, a:link, a:visited, a:hover, a:active {
+	text-decoration: none;
+	color: inherit;
+}
+
+address {
+	font-style: normal;
+}
+
+input {
+	vertical-align: middle;
+	border: 0;
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+	-o-box-sizing: border-box;
+	font-family: "본고딕", "Noto Sans KR", "Nanum Gothic", "Malgun Gothic",
+		sans-serif;
+	font-size: 13px;
+	font-style: normal;
+	font-weight: 300;
+	line-height: 1;
+	letter-spacing: -0.025em;
+	color: #424242;
+	appearance: none;
+	-webkit-appearance: none;
+	-moz-appearance: none;
+	-o-appearance: none;
+}
+
+textarea {
+	vertical-align: middle;
+	width: 100%;
+	resize: none;
+}
+
+button {
+	padding: 0;
+	border: 0;
+	background: none;
+	line-height: 1;
+}
+
+select {
+	appearance: none;
+	-webkit-appearance: none;
+	-moz-appearance: none;
+	-o-appearance: none;
+}
+
+hr {
+	margin: 0;
+	border: 0;
+}
+
+figure {
+	margin: 0;
+}
+
+img {
+	max-width: 100%;
+	vertical-align: top;
+	border: none;
+}
+
+table {
+	width: 100%;
+	table-layout: fixed;
+	border-spacing: 0;
+	border-collapse: collapse;
+}
+
+::before, ::after {
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+	-o-box-sizing: border-box;
+}
+
+.w100p {
+	width: 100%;
+}
+
+.btn {
+	display: inline-block;
+	vertical-align: middle;
+	font-weight: 300;
+	letter-spacing: -0.03em;
+	cursor: pointer;
+	-webkit-box-flex: 1;
+	flex-grow: 1;
+}
+
+.btnS {
+	width: 4.222rem;
+	height: 1.777rem;
+	border-radius: 20px;
+	font-size: 0.889rem;
+	font-weight: 400;
+}
+
+.btnR {
+	width: 5.556rem;
+	height: 2.222rem;
+	border-radius: 0px;
+	font-size: 0.889rem;
+	font-weight: 400;
+}
+
+.btnM {
+	min-width: 3.656rem;
+	height: 26px;
+	padding: 0 12px;
+	border-radius: 4px;
+	font-size: 0.889rem;
+	font-weight: 400;
+	position: relative;
+	line-height: 24px
+}
+
+.btnB {
+	width: 8.889rem;
+	height: 3.556rem;
+	border-radius: 4px;
+	font-size: 1.333rem;
+	font-weight: 400;
+}
+
+.btn001 {
+	border: 1px solid #05A4BC;
+	background-color: #fff;
+	color: #05A4BC;
+}
+
+.btn002 {
+	background-color: #5a667a;
+	color: #fff;
+}
+
+.btn003 {
+	background-color: #07B3CF;
+	color: #fff;
+}
+
+.btn001:hover {
+	background-color: #E0F6FA;
+}
+
+.btn002:hover {
+	background-color: #415362;
+}
+
+.btn003:hover {
+	background-color: #06A5BC;
+}
+
+/* login.jsp */
+.login-wrap {
+	position: relative;
+}
+
+#viewport {
+	height: 100% !important;
+}
+
+#login-view {
+	display: table;
+	position: relative;
+	width: 100%;
+	height: 100%;
+	box-sizing: border-box;
+	text-align: center;
+	background-size: cover;
+}
+
+#login-view .login-inner {
+	display: table-cell;
+	margin: 0;
+	padding: 0;
+	height: 100%;
+	vertical-align: middle;
+}
+
+#login-view .view-inner {
+	display: table-cell;
+	vertical-align: middle;
+	padding-bottom: 4.444rem;
+}
+
+.main-inner {
+	width: 100%;
+	max-width: 1082px;
+	margin: 0 auto;
+	display: table;
+	background: #fff;
+	box-shadow: 0px 15px 40px -22px rgba(0, 0, 0, 0.25);
+}
+
+.login-warp {
+	display: table-cell;
+	vertical-align: middle;
+}
+
+.login-logo {
+	text-align: left;
+}
+
+.login-logo .txt_box {
+	display: inline-block;
+	padding-left: 10px;
+	padding-top: 3px;
+}
+
+.login-area {
+	overflow: hidden;
+	margin: 15px auto 15px auto;
+	padding: 0 50px;
+	width: 25rem;
+	display: inline-block;
+	box-sizing: border-box;
+}
+
+.login-area h2 {
+	font-size: 40px;
+	font-weight: bold;
+	color: #70beca;
+	padding-bottom: 5px;
+}
+
+.login-area p {
+	font-size: 13px;
+	color: #9E9E9E
+}
+
+.login-area .login-form {
+	margin: 45px 0;
+	padding: 0;
+}
+
+.login-area .login-input-box>ul>li {
+	position: relative;
+	margin: 10px 0;
+}
+
+.login-area .login-input-box>ul>li>label {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 2.5rem;
+	text-align: center;
+	line-height: 48px;
+}
+
+.login-area .login-input-box>ul>li>label::after {
+	position: absolute;
+	top: 10px;
+	bottom: 10px;
+	right: 0;
+	margin: auto;
+	border-right: 1px solid #e0e0e0;
+	content: "";
+}
+
+.login-area .login-input-box>ul>li:hover>label {
+	color: #00aaaa;
+}
+
+.login-area .login-input-box>ul>li>.text {
+	padding-left: calc(2.5rem + 10px);
+	background: #EAEEF3;
+	border-color: #EAEEF3
+}
+
+.login-area .text {
+	height: 48px;
+}
+
+.srOnly {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	clip: rect(1px, 1px, 1px, 1px);
+	clip: rect(1px, 1px, 1px, 1px);
+	clip-path: polygon(0px 0px, 0px 0px, 0px 0px);
+	-webkit-clip-path: polygon(0px 0px, 0px 0px, 0px 0px);
+	overflow: hidden !important;
+}
+
+.login-area .login-form>button {
+	height: 64px;
+	font-size: 24px;
+}
+
+#login-footer {
+	position: absolute;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	z-index: 100;
+	background: #F5F7FA;
+}
+
+#login-footer:before {
+	content: '';
+	position: absolute;
+	top: 50%;
+	transform: translateY(-50%);
+	left: 3%;
+	width: 40px;
+	height: 32px;
+}
+
+#login-footer address {
+	text-align: center;
+	margin: 0 20px;
+	border-top: 1px solid #ddd;
+}
+
+#login-footer address p {
+	padding: 18px 0;
+	font-size: 16px;
+	font-weight: 200;
+	color: #757575;
+}

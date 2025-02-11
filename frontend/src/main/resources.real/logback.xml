@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+	<appender name="CONSOLE"
+		class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<pattern>%d{yyyy-MM-dd HH:mm:ss} %5p - %lo%n \t %m%n</pattern>
+		</encoder>
+	</appender>
+
+	<!-- 기본 LOG 설정 -->
+	<appender name="COMMON"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>D:/ForYuum/logs/common.log</file>
+		<rollingPolicy
+			class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<fileNamePattern>D:/ForYuum/logs/%d{yyyy-MM-dd}_common.log
+			</fileNamePattern>
+			<maxHistory>60</maxHistory>
+		</rollingPolicy>
+		<encoder>
+			<pattern>%d{yyyy-MM-dd HH:mm:ss} %5p - %lo%n \t %m%n</pattern>
+		</encoder>
+	</appender>
+
+	<root level="INFO">
+		<appender-ref ref="COMMON" />
+		<appender-ref ref="CONSOLE" />
+	</root>
+
+	<!-- JDBC 관련 LOG -->
+	<logger name="jdbc.connection" level="WARN" additivity="false">
+		<appender-ref ref="COMMON" />
+	</logger>
+
+	<logger name="jdbc.audit" level="WARN" additivity="false">
+		<appender-ref ref="COMMON" />
+	</logger>
+
+	<logger name="jdbc.sqlonly" level="WARN" additivity="false">
+		<appender-ref ref="COMMON" />
+	</logger>
+
+	<logger name="jdbc.sqltiming" level="INFO" additivity="false">
+		<appender-ref ref="COMMON" />
+	</logger>
+	<logger name="jdbc.resultset" level="WARN" additivity="false">
+		<appender-ref ref="COMMON" />
+	</logger>
+	<logger name="jdbc.resultsettable" level="ERROR"
+		additivity="false">
+		<appender-ref ref="COMMON" />
+	</logger>
+</configuration>

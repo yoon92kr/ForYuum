@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ 
+<mapper namespace="home">
+	<!-- 사용자 정보 조회 -->
+    <select id="GET_USER_INFO" parameterType="hashMap" resultType="String">
+		SELECT 
+			CONVERT(AES_DECRYPT(UNHEX(USER_NAME), 'YUUM_SECURITY_KEY') USING UTF8) AS USER_NAME
+		FROM 
+			USER_INFO
+		WHERE
+			USER_ID = #{P_USER_ID}
+			AND USER_PASSWORD = SHA2(CONCAT(#{P_USER_PASSWORD}, UPDATE_DT, REG_DT ), 256);
+    </select>
+    
+    <!-- 사용자 로그인 이력 저장 -->
+    <insert id="INSERT_ACCESS_HIS" parameterType="hashMap">
+    	INSERT INTO USER_ACCESS_HIS
+    		(USER_ID, EVENT_DT, ACCESS_TYPE, IP_ADDRESS, DEVICE_TYPE)
+   		VALUES
+   			(#{P_USER_ID}, NOW(), #{P_ACCESS_TYPE}, #{P_IP_ADDRESS}, #{P_DEVICE_TYPE})
+    </insert>
+</mapper>

@@ -1,0 +1,64 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xmlns:aop="http://www.springframework.org/schema/aop"
+		xmlns:p="http://www.springframework.org/schema/p"
+		xmlns:tx="http://www.springframework.org/schema/tx"
+		xmlns:context="http://www.springframework.org/schema/context"
+		xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+			http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+			http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+			http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+	<!-- jdbc.properties 복호화 - ENC() 암화 되어있는 값을 복호화 하기 위한 설정을 별도의 configuration으로 정의 -->
+	<bean id="jasyptStringEncryptor" class="com.foryuum.frontend.common.util.JasyptConfig">
+	</bean>
+	
+	<!-- 암호화가 포함되어 있는 프로퍼티를 읽을 수 있도록 propertyconfigurer 를 설정-->
+	<bean id="propertyConfigurer" class="org.jasypt.spring3.properties.EncryptablePropertyPlaceholderConfigurer" >
+	    <constructor-arg ref="jasyptStringEncryptor" />
+	    <property name="locations">
+	        <list>
+	            <value>classpath:config/properties/jdbc.properties</value>
+	        </list>
+	    </property>
+	</bean>
+	
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="logDataSource" />
+		<property name="mapperLocations" value="/**/dao/*_SQL.xml" />
+	</bean>
+	
+	<bean id="dataSource" class="org.apache.commons.dbcp2.BasicDataSource" destroy-method="close">
+		<property name="driverClassName" value="${driverClassName}" />
+		<property name="url" value="${url}" />
+		<property name="username" value="${username}" />
+		<property name="password" value="${bimilbun}" />
+		
+		<property name="removeAbandonedTimeout" value="${removeAbandonedTimeout}" />		<!-- 사용하지 않는 커넥션을 반환할지 여부 -->
+		<property name="initialSize" value="${initialSize}" />       		<!-- 초기에 생성되는 커넥션의 개수 -->
+		<property name="maxTotal" value="${maxTotal}" />        			<!-- 커넥션 풀이 제공할 최대 커넥션의 개수 -->
+		<property name="maxWaitMillis" value="${maxWaitMillis}" />						<!-- 풀에 커넥션이 존재하지 않을 때, 커넥션이 다시 풀에 리턴될 때까지 대기시간, 1/1000초 단위, -1일 경우 무한대기 -->
+		<property name="maxIdle" value="${maxIdle}" />						<!-- 사용되지 않고 풀에 저장될 수 있는 최대 커넥션 개수, 음수일 경우 제한이 없다. -->
+		<property name="minIdle" value="${minIdle}" />						<!-- 사용되지 않고 풀에 저장될 수 있는 최소 커넥션 개수, 음수일 경우 제한이 없다. -->
+		<property name="testOnBorrow" value="${testOnBorrow}" />			<!-- true 일 경우 커넥션 풀에서 커넥션을 가져올 때 커넥션이 유효한지의 여부 검사 -->
+		<property name="numTestsPerEvictionRun" value="${numTestsPerEvictionRun}" /> <!-- 사용되지 않는 커넥션을 몇 개 검사할 지 지정 -->
+		<!-- 특정 시간마다 validationQuery를 실행 셋팅 시작 -->
+		<property name="validationQuery" value="select 1" />
+		<property name="testWhileIdle" value="${testWhileIdle}" />         <!-- true 일 경우 비활성화 커넥션을 추출할 때 커넥션이 유효한지의 여부를 검사해서 유효하지 않은 커넥션은 풀에서 제거 -->
+		<property name="timeBetweenEvictionRunsMillis" value="${timeBetweenEvictionRunsMillis}" /> <!-- 사용되지 않은 커넥션을 추출하는 쓰레드의 실행주기를 지정한다. 양수가 아닌경우 실행되지 않는다. -->
+		<!-- 특정 시간마다 validationQuery를 실행 셋팅 끝 -->
+	</bean>
+
+	<bean id="sqlSession" class="org.mybatis.spring.SqlSessionTemplate">
+		<constructor-arg index="0" ref="sqlSessionFactory" />
+	</bean>
+	
+	<bean id="logDataSource" class="net.sf.log4jdbc.Log4jdbcProxyDataSource"> 
+		<constructor-arg ref="dataSource" /> 
+		<property name="logFormatter"> 
+			<bean class="net.sf.log4jdbc.tools.Log4JdbcCustomFormatter"> 
+				<property name="loggingType" value="MULTI_LINE" /> 
+				<property name="sqlPrefix" value="SQL:::" /> 
+			</bean> 
+		</property> 
+	</bean>
+</beans>
