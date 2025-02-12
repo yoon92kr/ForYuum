@@ -15,9 +15,6 @@ public class DBManager {
 	private Logger log = LoggerFactory.getLogger(this.getClass());
 
 	protected Connection getConnection() throws Exception {
-		// Xml Config에서 설정 값을 Get 한다.
-		// getXmlDBConfig();
-
 		try {
 			String resource = "config/properties/jdbc.properties";
 			Properties properties = new Properties();
@@ -25,14 +22,11 @@ public class DBManager {
 			Reader reader = Resources.getResourceAsReader(resource);
 			properties.load(reader);
 
-			String driver = properties.getProperty("driverClassName");
 			String url = properties.getProperty("url");
 			String uid = props.getProperty("jasypt.encrypt.uid");
 			String pass = props.getProperty("jasypt.encrypt.pass");
-			Class.forName(driver);
+			
 			con = DriverManager.getConnection(url, uid, pass);
-		} catch (ClassNotFoundException e) {
-			log.error("Connetion Exception : ", e);
 		} catch (SQLException e) {
 			log.error("", e);
 		}

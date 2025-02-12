@@ -22,20 +22,16 @@
         <script type="text/javascript" src="<%=ComConstant.CONTEXT_ROOT %>/js/rsa/rng.js"></script>
         
         <script type="text/javascript">
-			var setTime;
-			var securitySec = 120;
-			var securityKey;
-			var existsNotice = true;
             var keyModulus = "${keyModulus}";
             var keyExponent = "${keyExponent}";
 
 			function loginCheck(){
-				if(isNull($("#userId").val())) {
+				if(isNull($("#i_user_id").val())) {
 					swal({title: "아이디를 입력하세요.", closeOnClickOutside:false});
 					return;
 				}
 				
-				if(isNull($("#userPassword").val())) {
+				if(isNull($("#i_user_password").val())) {
 					swal({title: "비밀번호을 입력하세요.", closeOnClickOutside:false});
 					return;
 				}
@@ -44,8 +40,8 @@
 					method : "POST",
 					url : "loginCheck.do",
 					data : {
-						userId  : EncryptedValue($("#userId").val(), keyModulus, keyExponent),
-						password : EncryptedValue($("#userPassword").val(), keyModulus, keyExponent)
+						P_USER_ID  : EncryptedValue($("#i_user_id").val(), keyModulus, keyExponent),
+						P_USER_PASSWORD : EncryptedValue($("#i_user_password").val(), keyModulus, keyExponent)
 					},
 					dataType : "JSON",
 					success : sucLoginCheck,
@@ -54,15 +50,11 @@
 			}
 
 			function sucLoginCheck(returnData) {
-				if (isNotNull(returnData) && isNotNull(returnData.result)) {
-					if (returnData.result == "OK") {
-						securityKey = returnData.securityKey;
-						makeInputSecurityKey();
-					} else if ((returnData.result == "SOK")){
+				if (isNotNull(returnData)) {
+					if (returnData.result) {
 						$(location).attr('href','/home.do');
 					} else {
-						securityKey = "";
-                        swal({title: "로그인에 실패하였습니다.",  className: "swal-loginResultPop", text: returnData.failReason, closeOnClickOutside: false, buttons: {true: 'OK'}}).then(function (result) {
+                        swal({title: returnData.resultMsg,  className: "swal-loginResultPop", text: returnData.failReason, closeOnClickOutside: false, buttons: {true: 'OK'}}).then(function (result) {
                             if(result == 'true') {
                                 location.reload(true)
                             }
@@ -101,7 +93,6 @@
             <div class="login-inner">
                 <main id="login-main" class="login">
                     <div class="main-inner" style="width: 0% !important">
-                        <!-- 로그인폼 -->
                         <div class="login-warp">
                             <div class="login-area">
                                 <div class="login-logo">
@@ -116,13 +107,13 @@
                                     <div class="login-input-box">
                                         <ul>
                                             <li>
-                                                <label for="userId"><i class="fas fa-user"></i><span class="srOnly">아이디</span></label>
-                                                <input type="text" name="userId" id="userId" value="" placeholder="아이디" class="text w100p"
+                                                <label for="i_user_id"><i class="fas fa-user"></i><span class="srOnly">아이디</span></label>
+                                                <input type="text" name="i_user_id" id="i_user_id" value="" placeholder="아이디" class="text w100p"
                                                        onkeypress="if(event.keyCode == 13)loginCheck()" required>
                                             </li>
                                             <li>
-                                                <label for="userPassword"><i class="fas fa-lock"></i><span class="srOnly">비밀번호</span></label>
-                                                <input type="password" name="userPassword" id="userPassword" value="" placeholder="비밀번호" class="text w100p"
+                                                <label for="i_user_password"><i class="fas fa-lock"></i><span class="srOnly">비밀번호</span></label>
+                                                <input type="password" name="i_user_password" id="i_user_password" value="" placeholder="비밀번호" class="text w100p"
                                                        onkeypress="if(event.keyCode == 13)loginCheck()" required>
                                             </li>
                                         </ul>
@@ -139,9 +130,7 @@
                         </div>
                     </div>
                 </main>
-                <%--Contents Footer--%>
-                <jsp:include page="/WEB-INF/views/pc/common/contentsFooter.jsp"/>
-                <%--Contents Footer--%>				
+                <jsp:include page="/WEB-INF/views/common/contentsFooter.jsp"/>
             </div>
         </div>
     </div>

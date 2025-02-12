@@ -16,4 +16,7 @@ public class ComConstant {
 	
 	public static final String PC_PATH = "/pc";
 	public static final String MOBILE_PATH = "/mobile";
+	
+	public static final String FEEL = "feel";
+	public static final String ECOUNT = "ecount";
 }

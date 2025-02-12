@@ -29,25 +29,25 @@
 
 	<!-- JDBC 관련 LOG -->
 	<logger name="jdbc.connection" level="WARN" additivity="false">
-		<appender-ref ref="COMMON" />
+		<appender-ref ref="CONSOLE" />
 	</logger>
 
 	<logger name="jdbc.audit" level="WARN" additivity="false">
-		<appender-ref ref="COMMON" />
+		<appender-ref ref="CONSOLE" />
 	</logger>
 
 	<logger name="jdbc.sqlonly" level="WARN" additivity="false">
-		<appender-ref ref="COMMON" />
+		<appender-ref ref="CONSOLE" />
 	</logger>
 
 	<logger name="jdbc.sqltiming" level="INFO" additivity="false">
-		<appender-ref ref="COMMON" />
+		<appender-ref ref="CONSOLE" />
 	</logger>
 	<logger name="jdbc.resultset" level="WARN" additivity="false">
-		<appender-ref ref="COMMON" />
+		<appender-ref ref="CONSOLE" />
 	</logger>
-	<logger name="jdbc.resultsettable" level="ERROR"
+	<logger name="jdbc.resultsettable" level="WARN"
 		additivity="false">
-		<appender-ref ref="COMMON" />
+		<appender-ref ref="CONSOLE" />
 	</logger>
 </configuration>

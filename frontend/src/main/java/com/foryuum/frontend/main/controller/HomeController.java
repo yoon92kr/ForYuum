@@ -69,8 +69,9 @@ public class HomeController {
 	@GetMapping("/logout.do")
 	public String doLogout(HttpServletRequest request, HttpSession session) throws Exception {
 
-		if (SessionUtil.hasUserInfo(request)) {
-			homeService.insertAccessHis(request, ComConstant.LOGOUT);
+		UserInfoVo userInfo = SessionUtil.getUserInfo(session);
+		if (!CommonUtil.isNullOrEmpty(userInfo)) {
+			homeService.insertAccessHis(request, userInfo.getUserId(), ComConstant.LOGOUT);
 		} 
 		
 		session.invalidate();
@@ -80,16 +81,15 @@ public class HomeController {
 
 	@ResponseBody
 	@PostMapping("/loginCheck.do")
-	public JSONObject loginCheck(HttpServletRequest request, HttpSession session, @RequestParam Map<String, Object> requestData) throws CommonException, IOException {
+	public JSONObject loginCheck(HttpServletRequest request, @RequestParam Map<String, Object> requestData) throws CommonException, IOException {
 		JSONObject jo = new JSONObject();
-		boolean accessConfirm = homeService.checkUserInfo(session, requestData);
+		boolean accessConfirm = homeService.checkUserInfo(request, requestData);
 		
 		if(!accessConfirm) {
 			jo.put("resultMsg", ComConstant.LOGIN_ERROR_DEFAULT_MSG);
 		}
 
 		jo.put("result", accessConfirm);
-		homeService.insertAccessHis(request, accessConfirm ? ComConstant.LOGIN : ComConstant.LOGIN_FAIL);
 		return jo;
 	}
 

@@ -24,14 +24,14 @@
 	
 	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
 		<property name="dataSource" ref="logDataSource" />
-		<property name="mapperLocations" value="/**/dao/*_SQL.xml" />
+		<property name="mapperLocations" value="/**/sql/*Sql.xml" />
 	</bean>
 	
 	<bean id="dataSource" class="org.apache.commons.dbcp2.BasicDataSource" destroy-method="close">
 		<property name="driverClassName" value="${driverClassName}" />
 		<property name="url" value="${url}" />
-		<property name="username" value="${username}" />
-		<property name="password" value="${bimilbun}" />
+		<property name="username" value="${jasypt.encrypt.uid}" />
+		<property name="password" value="${jasypt.encrypt.pass}" />
 		
 		<property name="removeAbandonedTimeout" value="${removeAbandonedTimeout}" />		<!-- 사용하지 않는 커넥션을 반환할지 여부 -->
 		<property name="initialSize" value="${initialSize}" />       		<!-- 초기에 생성되는 커넥션의 개수 -->

@@ -114,7 +114,6 @@
 		$form.append($('<input type="hidden" name="SAVE_FLAG" value="M">'));
 		$form.append($('<input type="hidden" name="SCREENID" value="'+ screenId +'">'));
 		$form.append($('<input type="hidden" name="PATHNAME" value="'+ pathName +'">'));
-		$form.append($('<input type="hidden" name="CLIENTIP" value="<%=userInfo.getStrClientIP()%>">'));
 		$form.submit();
 	}
 </script>

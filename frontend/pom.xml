@@ -142,11 +142,11 @@
 	    <version>2.9.0</version>
 	</dependency>
 			
-	<!-- MariaDB 연동 -->
+	<!-- DB 연동 -->
 	<dependency>
-	    <groupId>org.mariadb.jdbc</groupId>
-	    <artifactId>mariadb-java-client</artifactId>
-	    <version>3.5.1</version>
+	    <groupId>mysql</groupId>
+	    <artifactId>mysql-connector-java</artifactId>
+	    <version>8.0.33</version>
 	</dependency>
 
 	<dependency>
@@ -175,17 +175,31 @@
 	</dependency>
 
 	<!-- AesCrypto 암호화, 복호화 -->
-		<dependency>
-			<groupId>org.jasypt</groupId>
-			<artifactId>jasypt-spring3</artifactId>
-			<version>1.9.3</version>
-		</dependency>
+	<dependency>
+		<groupId>org.jasypt</groupId>
+		<artifactId>jasypt-spring3</artifactId>
+		<version>1.9.3</version>
+	</dependency>
 
-		<dependency>
-			<groupId>org.bouncycastle</groupId>
-			<artifactId>bcprov-jdk15to18</artifactId>
-			<version>1.78.1</version>
-		</dependency>
+	<dependency>
+		<groupId>org.bouncycastle</groupId>
+		<artifactId>bcprov-jdk15to18</artifactId>
+		<version>1.78.1</version>
+	</dependency>
+		
+	<!-- 웹 크롤링 -->
+	<dependency>
+	    <groupId>org.seleniumhq.selenium</groupId>
+	    <artifactId>selenium-java</artifactId>
+	    <version>4.28.1</version>
+	</dependency>
+	
+	<dependency>
+	    <groupId>org.seleniumhq.selenium</groupId>
+	    <artifactId>selenium-chrome-driver</artifactId>
+	    <version>4.28.1</version>
+	</dependency>
+
 
   	<!-- Test -->
     <dependency>

@@ -165,7 +165,7 @@ table {
 }
 
 .btn002 {
-	background-color: #5a667a;
+	background-color: #5a7a77;
 	color: #fff;
 }
 
@@ -179,7 +179,7 @@ table {
 }
 
 .btn002:hover {
-	background-color: #415362;
+	background-color: #415c5a;
 }
 
 .btn003:hover {
@@ -255,7 +255,7 @@ table {
 .login-area h2 {
 	font-size: 40px;
 	font-weight: bold;
-	color: #70beca;
+	color: #5f926e;
 	padding-bottom: 5px;
 }
 

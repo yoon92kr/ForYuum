@@ -24,7 +24,7 @@
 	
 	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
 		<property name="dataSource" ref="logDataSource" />
-		<property name="mapperLocations" value="/**/dao/*_SQL.xml" />
+		<property name="mapperLocations" value="/**/sql/*Sql.xml" />
 	</bean>
 	
 	<bean id="dataSource" class="org.apache.commons.dbcp2.BasicDataSource" destroy-method="close">
