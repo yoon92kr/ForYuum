@@ -10,11 +10,10 @@
 	<!-- 기본 LOG 설정 -->
 	<appender name="COMMON"
 		class="ch.qos.logback.core.rolling.RollingFileAppender">
-		<file>D:/ForYuum/logs/common.log</file>
+		<file>/usr/local/apache-tomcat-10.1.35/logs/common.log</file>
 		<rollingPolicy
 			class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-			<fileNamePattern>D:/ForYuum/logs/%d{yyyy-MM-dd}_common.log
-			</fileNamePattern>
+			<fileNamePattern>/usr/local/apache-tomcat-10.1.35/logs/%d{yyyy-MM-dd}_common.log</fileNamePattern>
 			<maxHistory>60</maxHistory>
 		</rollingPolicy>
 		<encoder>

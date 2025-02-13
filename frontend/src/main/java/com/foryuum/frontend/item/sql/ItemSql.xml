@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ 
+<mapper namespace="item">
+	<!-- 상품 정보 조회 -->
+    <select id="GET_ITEM_INFO" parameterType="hashMap" resultType="hashMap">
+		SELECT
+			VENDOR_NAME, VENDOR_ITEM_NAME, VENDOR_PRICE
+		FROM 
+			ITEM_INFO 
+		WHERE 
+			ITEM_NO = #{P_ITEM_NO}
+    </select>
+
+	<!-- 시스템 로그인 정보 조회 -->
+    <select id="GET_SYSTEM_LOGIN_INFO" parameterType="hashMap" resultType="hashMap">
+		SELECT
+			IFNULL(CONVERT(AES_DECRYPT(UNHEX(LOGIN_ID), 'YUUM_SECURITY_KEY') USING UTF8), '') AS LOGIN_ID,
+			IFNULL(CONVERT(AES_DECRYPT(UNHEX(LOGIN_SUB_ID), 'YUUM_SECURITY_KEY') USING UTF8), '') AS LOGIN_SUB_ID,
+			IFNULL(CONVERT(AES_DECRYPT(UNHEX(LOGIN_PASSWORD), 'YUUM_SECURITY_KEY') USING UTF8), '') AS LOGIN_PASSWORD
+		FROM 
+			SYSTEM_LOGIN_INFO
+		WHERE 
+			USER_ID = #{P_USER_ID} 
+			AND SYSTEM_ID = #{P_SYSTEM_ID}
+    </select>
+</mapper>
