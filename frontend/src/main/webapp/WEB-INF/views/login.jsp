@@ -3,6 +3,11 @@
 <!DOCTYPE html>
 <html lang="ko" dir="ltr">
     <head>
+		<meta property="og:title" content="For Yuum">
+		<meta property="og:type" content="website">
+		<meta property="og:image" content="http://39.119.158.240:21530//img/site_img.png">
+		<meta property="og:description" content="만사가 귀찮은 사랑스러운 유미를 위한">
+	  
         <title><%=ComConstant.TITLE%></title>
         <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
 		<meta http-equiv="cache-Control" content="co-cache" />
@@ -130,7 +135,7 @@
 	                        </div>
 	                    </div>
 	                </main>
-	                <jsp:include page="/WEB-INF/views/common/contentsFooter.jsp"/>
+	                <jsp:include page="/WEB-INF/views//mobile/common/contentsFooter.jsp"/>
 	            </div>
 	        </div>
 	    </div>

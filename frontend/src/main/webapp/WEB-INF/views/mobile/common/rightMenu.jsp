@@ -43,7 +43,8 @@
 				<h1>For Yuum</h1>
 				<div class="right_nav_box">
 					<ul>
-						<li><a href="dashboard.do">사입/배송</a></li>
+						<li><a href="automaticOrder">자동 주문</a></li>
+						<li><a href="manualOrder">수동 주문</a></li>
 						<li><a href="logout.do">로그아웃</a></li>
 					</ul>
 				</div>

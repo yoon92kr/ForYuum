@@ -19,4 +19,12 @@ public class ComConstant {
 	
 	public static final String FEEL = "feel";
 	public static final String ECOUNT = "ecount";
+	public static final String SHULINE = "shuline";
+	
+	public static final String MODERN = "modernblanco";
+	
+	public static final String MODERNBLANCO = "모던블랑코";
+	public static final String YAMIBLING = "야미블링";
+	public static final String NAGEUMSHOP = "나금샵";
 }
+

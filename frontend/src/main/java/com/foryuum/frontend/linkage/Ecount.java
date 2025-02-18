@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -20,9 +21,15 @@ public class Ecount {
 
 	private static final Logger LOG = LoggerFactory.getLogger(Ecount.class);
 	private final WebDriver webDriver;
+	private final WebDriverWait wait;
+	private final Actions actions;
+	private final JavascriptExecutor jsExecutor;
 
 	public Ecount() {
 		this.webDriver = WebDriverConfig.webDriver();
+		wait = new WebDriverWait(webDriver, Duration.ofSeconds(3));
+		actions = new Actions(webDriver);
+	    jsExecutor = (JavascriptExecutor) webDriver;
 	}
 
 	public void login(Map<String, Object> loginInfo) {
@@ -45,114 +52,61 @@ public class Ecount {
 	
 	public void ecountProcess(Map<String, Object> resultMap, List<Map<String, Object>> orderList) {
 		try {
-			WebDriverWait wait = new WebDriverWait(webDriver, Duration.ofSeconds(5));
-			Actions actions = new Actions(webDriver);
 			String lastDeliverInfo = "";
 	
-			WebElement saveButton = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("group3slipSavePrint")));
+			WebElement saveButton = wait.until(ExpectedConditions.elementToBeClickable(By.id("group3slipSavePrint")));
 			/* 1. 배송 정보 입력 */
 			for (int i = 0 ; i < orderList.size(); i++) {
 				Map<String, Object> map = orderList.get(i);
 				
 		        /* 품목 코드 [001] */
-		        WebElement prod_cd = wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("tr[data-key='" + i + "'] td[data-columnid='prod_cd']")));
-		        actions.moveToElement(prod_cd).click().perform();
-		        
-		        WebElement prod_cd_input = prod_cd.findElement(By.tagName("input"));
-		        actions.moveToElement(prod_cd_input).click().perform();
-		        prod_cd_input.sendKeys("001");
+				checkAndInput(i, "prod_cd", "001");
 		        
 		        /* 배송 방법 [고객발송] */
-		        WebElement add_cd_01 = wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("tr[data-key='" + i + "'] td[data-columnid='ADD_CD_01']")));
+		        WebElement add_cd_01 = wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("tr[data-key='" + i + "'] td[data-columnid='ADD_CD_01']")));
 		        add_cd_01.click();
 		        
-		        WebElement add_cd_01_button = add_cd_01.findElement(By.cssSelector("div.grid-input-holder.edit_container.edit-state div#edit div.control-set div.control button"));
+		        WebElement add_cd_01_button = wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("div.grid-input-holder.edit_container.edit-state div#edit div.control-set div.control button")));
 		        add_cd_01_button.click();
 		        
 	            WebElement customerDeliveryOption = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//a[text()='고객발송']")));
 	            customerDeliveryOption.click();
 		        
-		        /* 보내시는분 상호 [모던블랑코] */
-		        WebElement remarks = wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("tr[data-key='" + i + "'] td[data-columnid='remarks']")));
-		        actions.moveToElement(remarks).click().perform();
-		        
-		        WebElement remarks_input = remarks.findElement(By.tagName("input"));
-		        actions.moveToElement(remarks_input).click().perform();
-		        remarks_input.clear();
-		        remarks_input.sendKeys("모던블랑코");
+		        /* 보내시는분 상호 */
+	            checkAndInput(i, "remarks", map.get("P_COMPANY_NAME").toString());
 		        
 		        /* 받으시는분 성함 */
 		        if(!lastDeliverInfo.equals(map.get("P_NAME").toString() + "_" + map.get("P_ADDRESS").toString())) {
-		        	WebElement p_remarks2 = wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("tr[data-key='" + i + "'] td[data-columnid='p_remarks2']")));
-		        	actions.moveToElement(p_remarks2).click().perform();
-		        	
-		        	WebElement p_remarks2_input = p_remarks2.findElement(By.tagName("input"));
-		        	actions.moveToElement(p_remarks2_input).click().perform();
-		        	p_remarks2_input.sendKeys(map.get("P_NAME").toString());
+		        	checkAndInput(i, "p_remarks2", map.get("P_NAME").toString());
 		        	
 		        	/* 받으시는분 전화번호 */
-		        	WebElement p_remarks3 = wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("tr[data-key='" + i + "'] td[data-columnid='p_remarks3']")));
-		        	actions.moveToElement(p_remarks3).click().perform();
-		        	
-		        	WebElement p_remarks3_input = p_remarks3.findElement(By.tagName("input"));
-		        	actions.moveToElement(p_remarks3_input).click().perform();
-		        	p_remarks3_input.sendKeys(map.get("P_MOBILE").toString());
+		        	checkAndInput(i, "p_remarks3", map.get("P_MOBILE").toString());
 		        	
 		        	/* 받으시는분 주소 */
-		        	WebElement add_txt_01 = wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("tr[data-key='" + i + "'] td[data-columnid='ADD_TXT_01']")));
-		        	actions.moveToElement(add_txt_01).click().perform();
-		        	
-		        	WebElement add_txt_01_input = add_txt_01.findElement(By.tagName("input"));
-		        	actions.moveToElement(add_txt_01_input).click().perform();
-		        	add_txt_01_input.sendKeys(map.get("P_ADDRESS").toString());
+		        	checkAndInput(i, "ADD_TXT_01", map.get("P_ADDRESS").toString());
 		        	
 		        	/* 배송메모 */
-		        	WebElement add_txt_02 = wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("tr[data-key='" + i + "'] td[data-columnid='ADD_TXT_02']")));
-		        	actions.moveToElement(add_txt_02).click().perform();
-		        	
-		        	WebElement add_txt_02_input = add_txt_02.findElement(By.tagName("input"));
-		        	actions.moveToElement(add_txt_02_input).click().perform();
-		        	add_txt_02_input.sendKeys(map.get("P_NOTE").toString());
+		        	checkAndInput(i, "ADD_TXT_02", map.get("P_NOTE").toString());
 		        }
 		        
 		        /* 도매 상호명 */
-		        WebElement add_txt_03 = wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("tr[data-key='" + i + "'] td[data-columnid='ADD_TXT_03']")));
-		        actions.moveToElement(add_txt_03).click().perform();
-		        
-		        WebElement add_txt_03_input = add_txt_03.findElement(By.tagName("input"));
-		        actions.moveToElement(add_txt_03_input).click().perform();
-		        add_txt_03_input.sendKeys(map.get("P_VENDOR_NAME").toString());
+		        checkAndInput(i, "ADD_TXT_03", map.get("P_VENDOR_NAME").toString());
 		        
 		        /* 도매 상품명 */
-		        WebElement add_txt_04 = wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("tr[data-key='" + i + "'] td[data-columnid='ADD_TXT_04']")));
-		        actions.moveToElement(add_txt_04).click().perform();
-		        
-		        WebElement add_txt_04_input = add_txt_04.findElement(By.tagName("input"));
-		        actions.moveToElement(add_txt_04_input).click().perform();
-		        add_txt_04_input.sendKeys(map.get("P_VENDOR_ITEM_NAME").toString());
+		        checkAndInput(i, "ADD_TXT_04", map.get("P_VENDOR_ITEM_NAME").toString());
 		        
 		        /* 옵션 */
-		        WebElement add_txt_05 = wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("tr[data-key='" + i + "'] td[data-columnid='ADD_TXT_05']")));
-		        actions.moveToElement(add_txt_05).click().perform();
-		        
-		        WebElement add_txt_05_input = add_txt_05.findElement(By.tagName("input"));
-		        actions.moveToElement(add_txt_05_input).click().perform();
-		        add_txt_05_input.sendKeys(map.get("P_VENDOR_ITEM_OPTION").toString());
+		        checkAndInput(i, "ADD_TXT_05", map.get("P_VENDOR_ITEM_OPTION").toString());
 		        
 		        /* 수량 */
-		        WebElement qty = wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("tr[data-key='" + i + "'] td[data-columnid='qty']")));
-		        actions.moveToElement(qty).click().perform();
-		        
-		        WebElement qty_input = qty.findElement(By.tagName("input"));
-		        actions.moveToElement(qty_input).click().perform();
-		        qty_input.sendKeys(map.get("P_COUNT").toString());
+		        checkAndInput(i, "qty", map.get("P_COUNT").toString());
 		        
 		        lastDeliverInfo = map.get("P_NAME").toString() + "_" + map.get("P_ADDRESS").toString(); // 이전 배송 정보
 	        }
 			
 			/* 2. 저장 요청 */
 			saveButton.click();
-			Thread.sleep(200);
+			Thread.sleep(500);
 			saveButton.click();
 			
 			/* 3. 저장 결과 확인 */
@@ -173,7 +127,8 @@ public class Ecount {
 			LOG.error("ecountProcess Exception :: {}", e);
 			
             resultMap.put("RESULT", false);
-            resultMap.put("RESULT_MSG", "배송 요청에 실패했습니다.\n 아빠를 불러주세요!");
+            resultMap.put("RESULT_MSG", "배송 요청에 실패했습니다.");
+            resultMap.put("RESULT_VALUE", "뭔가 이상합니다.\\n 아빠를 불러주세요!");
 		} finally {
 			logout();
 		}
@@ -201,5 +156,37 @@ public class Ecount {
 
 		return result;
 	}
+	
+	private void checkAndInput(int idx, String columnId, String value) throws NoSuchElementException {
+	    WebElement clickElement = wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("tr[data-key='" + idx + "'] td[data-columnid='" + columnId + "'] span")));
+	    
+	    try {
+	        clickElement.click();
+	        processInput(idx, columnId, value);
+	    } catch (Exception we) {
+	        LOG.error("WebElement Click Exception :: {}", columnId);
+
+	        try {
+	            actions.moveToElement(clickElement).click().perform();
+	            processInput(idx, columnId, value);
+	        } catch (Exception ae) {
+	            LOG.error("Action Click Exception :: {}", columnId);
+	            
+	            try {
+	                jsExecutor.executeScript("arguments[0].click();", clickElement);
+	                processInput(idx, columnId, value);
+	            } catch (Exception je) {
+	                LOG.error("JavaScript Click Exception :: {}", columnId);
+	                throw new NoSuchElementException("can't find input :: " + columnId, je);
+	            }
+	        }
+	    }
+	}
+	
+	private void processInput(int idx, String columnId, String value) {
+	    WebElement inputElement = wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("tr[data-key='" + idx + "'] td[data-columnid='" + columnId + "'] input")));
+	    inputElement.clear();
+	    inputElement.sendKeys(value);
+	} 
 
 }

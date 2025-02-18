@@ -10,10 +10,16 @@
 %>
 <html lang="ko" dir="ltr">
 	<head>
+		<meta property="og:title" content="For Yuum">
+		<meta property="og:type" content="website">
+		<meta property="og:image" content="http://39.119.158.240:21530//img/site_img.png">
+		<meta property="og:description" content="만사가 귀찮은 사랑스러운 유미를 위한">
+		
         <title><%=ComConstant.TITLE%></title>
         <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
 		<meta http-equiv="cache-Control" content="co-cache" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+			
 
 		<link rel="stylesheet" href="<%=ComConstant.CONTEXT_ROOT %>/css/bootstrap.min.css"> 
         <link rel="stylesheet" href="<%=ComConstant.CONTEXT_ROOT %>/jquery/jquery-ui-1.14.1.min.css">
@@ -41,7 +47,8 @@
 				method : "POST",
 				url : "/item/getItemInfo.do",
 				data : {
-					P_ITEM_NO  : $("#i_item_no").val()
+					P_ITEM_NO  : $("#i_item_no").val(),
+					P_COMPANY_NAME : $("#i_company_name").val()
 				},
 				dataType : "JSON",
 				success : sucGetItemInfo,
@@ -110,6 +117,7 @@
 		
 		function itemConvertMap() {
 			return info = {
+					P_COMPANY_NAME : $("#i_company_name").val(),
 					P_ITEM_NO : $("#i_item_no").val(),
 					P_VENDOR_ITEM_NAME : $("#i_vendor_item_name").val(),
 					P_VENDOR_PRICE  : $("#i_vendor_price").val(),
@@ -158,6 +166,7 @@
 			$.ajax({
 				method : "POST",
 				url : "/item/initOrder.do",
+				url : "/item/checkOrder.do",
 				data : {data : JSON.stringify(param)},
 				dataType : "JSON",
 				success : sucInitOrder,
@@ -175,7 +184,7 @@
 			if(returnData.RESULT) {
 				swal({title:returnData.RESULT_MSG, text: returnData.RESULT_VALUE, icon:"success",closeOnClickOutside:false}).then(() => {$(location).attr('href','/dashboard.do');});
 			} else {
-				swal({title: returnData.RESULT_MSG, icon: "warning", closeOnClickOutside: false});
+				swal({title: returnData.RESULT_MSG, text: returnData.RESULT_VALUE, icon: "warning", closeOnClickOutside: false});
 			}
 			
 		}
@@ -202,7 +211,14 @@
 					</colgroup>
 					<tbody>
 						<tr>
-							<td colspan="3">
+							<td colspan="1">
+								<select class="nomal_input" id="i_company_name" style="width:100%;">
+									<option value="모던블랑코">모던</option>
+									<option value="야미블링">야미</option>
+<!-- 									<option value="나금샵">나금</option> -->
+								</select>
+							</td>
+							<td colspan="2">
 								<input type="text" class="nomal_input" style="width:100%;" placeholder="상품번호" id="i_item_no" autocomplete="off" />
 							</td>
 							<td colspan="2">
@@ -232,7 +248,7 @@
 						</tr>
 						<tr>
 							<td colspan="2">
-								<select class="nomal_input" style="float: left; width: 135px;" id="i_vendor_name">
+								<select class="nomal_input" id="i_vendor_name" style="width:100%;">
 									<option value="">매장명</option>
 									<option value="예원">예원</option>
 									<option value="리턴">리턴</option>
@@ -301,7 +317,7 @@
 		<div class="list_option_bottom" id="v_btn_table" style="width: 99%; justify-content: center;display: flex;">
 			<a class="option_write_bt" onClick="initOrder()" data-toggle="modal" data-target="#v_back_drop" style="width: 300px;"><span>사입/배송 요청</span></a>
 	    </div>
-		<jsp:include page="/WEB-INF/views/common/rightMenu.jsp"/>
+		<jsp:include page="/WEB-INF/views/mobile/common/rightMenu.jsp"/>
 		<div class="mobile-loading"><div></div></div>
 	</body>
 </html>

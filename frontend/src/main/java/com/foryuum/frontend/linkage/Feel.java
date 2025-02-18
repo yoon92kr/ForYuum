@@ -83,7 +83,7 @@ public class Feel {
 	            sb.append("]");
 	            
 	            resultMap.put("RESULT", false);
-	            resultMap.put("RESULT_MSG", "매칭되지 않은 매장이 존재합니다.\n 아빠를 불러주세요!");
+	            resultMap.put("RESULT_MSG", "매칭되지 않은 매장이 존재합니다.");
 	            resultMap.put("RESULT_VALUE", sb.toString());
 	        } else { 
 	        	/* 3-2. 변환 성공 시 사입 요청 수행 */
@@ -133,7 +133,8 @@ public class Feel {
 		        } else {
 		        	/* 4-2. 요청 실패 시, 아직 원인을 모르기 때문에 임시 응답 */
 		            resultMap.put("RESULT", false);
-		            resultMap.put("RESULT_MSG", "뭔가 이상합니다.\n 아빠를 불러주세요!");
+		            resultMap.put("RESULT_MSG", "사입 요청에 성공했습니다.");
+		            resultMap.put("RESULT_VALUE", "뭔가 이상합니다.\n 아빠를 불러주세요!");
 		        }
 	        }
 			

@@ -34,17 +34,10 @@ public class CommonUtil {
 		return value == null || value.isEmpty();
 	}
 
-	/* 모바일/PC 구분 및 경로 설정, 기본값은 PC */
-	public static String getBasePath(HttpSession session) {
-		String basePath = ComConstant.PC_PATH;
-
+	/* 접속 환경이 Mobile 인지 검증 */
+	public static boolean isMobile(HttpSession session) {
 		String deviceType = (String) session.getAttribute(ComConstant.DEVICE_TYPE);
 
-		if (ComConstant.MOBILE.equals(deviceType)) {
-			basePath = ComConstant.MOBILE_PATH;
-		}
-
-		return basePath;
-
+		return ComConstant.MOBILE.equals(deviceType);
 	}
 }

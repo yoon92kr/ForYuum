@@ -116,7 +116,7 @@ public class HomeController {
 			return "redirect:/login.do";
 		}
 
-		return CommonUtil.getBasePath(session) + "/dashboard";
+		return CommonUtil.isMobile(session) ? "manualOrder" : "/dashboard";
 	}
 
 	private void setRsaInfo(HttpServletRequest request) throws CommonException {

@@ -10,6 +10,7 @@
 			ITEM_INFO 
 		WHERE 
 			ITEM_NO = #{P_ITEM_NO}
+			AND COMPANY_NAME = #{P_COMPANY_NAME}
     </select>
 
 	<!-- 시스템 로그인 정보 조회 -->

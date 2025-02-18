@@ -68,9 +68,9 @@ body, div, dl, dt, dd, ul, ol, menu, li, h1, h2, h3, h4, h5, h6, pre,
 }
 
 .right_nav_wrap h1 {
-	background: #368b42 30px 8px;
+	background: #368b42 url(/img/mobile/right_nav_logo.png) no-repeat;
 	height: 55px;
-	background-size: 200px auto;
+	background-size: 230px auto;
 	text-indent: -99999px;
 	overflow: hidden;
 }

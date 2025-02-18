@@ -37,7 +37,16 @@ public class ItemController {
 	@PostMapping("/initOrder.do")
 	public JSONObject initOrder(HttpServletRequest request, HttpSession session, @RequestParam Map<String, Object> requestData) throws CommonException, IOException {
 		JSONObject jo = new JSONObject();
-		jo.put("returnData", itemService.orderAndDeliver(session, requestData));
+		jo.put("returnData", itemService.initOrder(session, requestData));
+		
+		return jo;
+	}
+	
+	@ResponseBody
+	@PostMapping("/checkOrder.do")
+	public JSONObject checkOrder(HttpServletRequest request, HttpSession session) throws CommonException, IOException {
+		JSONObject jo = new JSONObject();
+		jo.put("returnData", itemService.checkOrder(session));
 		
 		return jo;
 	}
