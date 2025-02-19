@@ -40,4 +40,9 @@ public class CommonUtil {
 
 		return ComConstant.MOBILE.equals(deviceType);
 	}
+
+	public static Object nullCheck(Object value) {
+		return isNullOrEmpty(value) ? "" : value;
+	}
+
 }

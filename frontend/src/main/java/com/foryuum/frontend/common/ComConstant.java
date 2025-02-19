@@ -26,5 +26,15 @@ public class ComConstant {
 	public static final String MODERNBLANCO = "모던블랑코";
 	public static final String YAMIBLING = "야미블링";
 	public static final String NAGEUMSHOP = "나금샵";
+	
+	public static final String DELIVERING = "DELIVERING";
+	public static final String DELIVERING_NAME = "배송 중";
+	
+	public static final String DELIVERED = "DELIVERED";
+	public static final String DELIVERED_NAME = "배송 완료";
+	
+	public static final String PURCHASE_DECIDED = "PURCHASE_DECIDED_NAME";
+	public static final String PURCHASE_DECIDED_NAME = "구매 확정";
 }
+
 

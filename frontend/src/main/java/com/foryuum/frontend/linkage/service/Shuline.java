@@ -1,4 +1,4 @@
-package com.foryuum.frontend.linkage;
+package com.foryuum.frontend.linkage.service;
 
 import java.time.Duration;
 import java.util.HashMap;

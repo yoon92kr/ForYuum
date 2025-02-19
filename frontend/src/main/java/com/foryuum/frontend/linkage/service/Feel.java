@@ -1,4 +1,4 @@
-package com.foryuum.frontend.linkage;
+package com.foryuum.frontend.linkage.service;
 
 import java.text.DecimalFormat;
 import java.time.Duration;
@@ -17,6 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.foryuum.frontend.common.service.WebDriverConfig;
+import com.foryuum.frontend.common.util.LinkageUtil;
 
 public class Feel {
 
@@ -54,7 +55,7 @@ public class Feel {
 		}
 	}
 	
-	public void feelProcess(Map<String, Object> resultMap, List<Map<String, Object>> orderList) {
+	public void feelProcess(Map<String, Object> returnData, List<Map<String, Object>> orderList) {
 		try {
 			/* 1. Excel 사입 페이지 이동 */
 			moveOrderToExcel();
@@ -82,9 +83,7 @@ public class Feel {
 	            }
 	            sb.append("]");
 	            
-	            resultMap.put("RESULT", false);
-	            resultMap.put("RESULT_MSG", "매칭되지 않은 매장이 존재합니다.");
-	            resultMap.put("RESULT_VALUE", sb.toString());
+	            LinkageUtil.setReult(returnData, false, "사입 요청 실패", sb.toString());
 	        } else { 
 	        	/* 3-2. 변환 성공 시 사입 요청 수행 */
 	        	WebElement okButton = webDriver.findElement(By.className("confirm"));
@@ -112,29 +111,24 @@ public class Feel {
 			            DecimalFormat formatter = new DecimalFormat("#,###");
 			            String formattedNumber = formatter.format(intCharge - intCost);
 			            
-			        	sb.append("주문 완료! 필사입 남은 잔액 : ");
+			        	sb.append("필사입 남은 잔액 : ");
 			        	sb.append(formattedNumber);
 			        	sb.append("원");
 			        } else {
 			            DecimalFormat formatter = new DecimalFormat("#,###");
 			            String formattedNumber = formatter.format(intCost - intCharge);
 			            
-			        	sb.append("주문 완료!\n");
-			        	sb.append("입금 계좌 : 신한 110-510-528482 필사입(김종필)\n");
+			        	sb.append("입금 계좌 : 신한 110-510-528482 필사입\n");
+			        	sb.append("입급자명 : 모던블랑코\n");
 			        	sb.append("입금 금액 : ");
 			        	sb.append(formattedNumber);
 			        	sb.append("원");
 			        }
-			        
-		            resultMap.put("RESULT", true);
-		            resultMap.put("RESULT_MSG", "사입 요청에 성공했습니다.");
-		            resultMap.put("RESULT_VALUE", sb.toString());
+			        LinkageUtil.setReult(returnData, true, "사입 요청 성공", sb.toString());
 			        
 		        } else {
 		        	/* 4-2. 요청 실패 시, 아직 원인을 모르기 때문에 임시 응답 */
-		            resultMap.put("RESULT", false);
-		            resultMap.put("RESULT_MSG", "사입 요청에 성공했습니다.");
-		            resultMap.put("RESULT_VALUE", "뭔가 이상합니다.\n 아빠를 불러주세요!");
+		        	LinkageUtil.setReult(returnData, false, "사입 요청 실패",  "뭔가 이상합니다.\n 아빠를 불러주세요!");
 		        }
 	        }
 			

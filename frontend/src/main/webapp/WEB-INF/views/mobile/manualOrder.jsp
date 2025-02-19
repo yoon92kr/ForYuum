@@ -37,17 +37,31 @@
 		var orderMap = {};
 
 		function getItemInfo() {
-			if(isNull($("#i_item_no").val())) {
+			if(isNull($("#i_search_no").val())) {
 				swal({title: "상품번호를 입력하세요.", closeOnClickOutside:false});
 				return;
 			}
+			
+			var searchNo = $("#i_search_no").val().trim();
 
+			if(searchNo.length == 10) {
+				getItemInfoByItemNo(searchNo)
+			} else if(searchNo.length == 16) {
+				getItemInfoByItemOrderNo(searchNo)
+			} else {
+				swal({title: "상품번호/상품주문번호를 확인하세요.", closeOnClickOutside:false});
+			}
+		} 
+		
+		/* 상품번호 기반 조회 */
+		function getItemInfoByItemNo(searchNo) {
 			mobileLoading();
+			
 			$.ajax({
 				method : "POST",
-				url : "/item/getItemInfo.do",
+				url : "/item/getItemInfoByItemNo.do",
 				data : {
-					P_ITEM_NO  : $("#i_item_no").val(),
+					P_ITEM_NO  : searchNo,
 					P_COMPANY_NAME : $("#i_company_name").val()
 				},
 				dataType : "JSON",
@@ -59,7 +73,27 @@
 			});
 		}
 		
-		function sucGetItemInfo(data) {
+		/* 주문번호 기반 조회 */
+		function getItemInfoByItemOrderNo(searchNo) {
+			mobileLoading();
+			
+			$.ajax({
+				method : "POST",
+				url : "/item/getItemInfoByItemOrderNo.do",
+				data : {
+					P_ITEM_ORDER_NO  : searchNo,
+					P_COMPANY_NAME : $("#i_company_name").val()
+				},
+				dataType : "JSON",
+				success : sucGetItemInfoByItemOrderNo,
+				error : function(xhr, status, error) {
+					mobileLoadingEnd();
+					commonHandleError(xhr, status, error,  "상품 정보 조회중 오류가 발생 하였습니다.");
+				}
+			});
+		}
+		
+		function sucGetItemInfoByItemNo(data) {
 			var itemInfo = data.returnData;
 			if(isNotNull(itemInfo)) {
 				if (!vendorList.includes(itemInfo.VENDOR_NAME)) {
@@ -74,6 +108,34 @@
 			} else {
 				swal({title: "조회된 상품 정보가 없습니다.", closeOnClickOutside:false});
 			}
+			mobileLoadingEnd();
+		}
+		
+		function sucGetItemInfoByItemOrderNo(data) {
+			var itemInfo = data.returnData.RESULT_VALUE;
+			if(isNotNull(itemInfo)) {
+				if (!vendorList.includes(itemInfo.VENDOR_NAME)) {
+					swal({title: "조회된 상품 정보가 없습니다.", closeOnClickOutside:false});
+				} else {
+					 $("#i_vendor_item_name").val(itemInfo.VENDOR_ITEM_NAME);
+					 $("#i_vendor_price").val(convertNumber(itemInfo.VENDOR_PRICE));
+					 $("#i_count").val(itemInfo.ORDER_COUNT);
+					 $('#i_vendor_name').val(itemInfo.VENDOR_NAME).change();
+					 $("#i_vendor_item_option").val(itemInfo.ORDER_ITEM_OPTION);
+					 
+					$("#i_name").val(itemInfo.RECEIVER_NAME);
+					$("#i_address").val(itemInfo.RECEIVER_ADDRES);
+					$("#i_mobile").val(itemInfo.RECEIVER_MOBILE);
+					$("#i_note").val(itemInfo.SHIPPING_MEMO);
+					
+					if(data.returnData.RESULT == true) {
+						swal({title: data.returnData.TITLE, text: data.returnData.TEXT, closeOnClickOutside:false});
+					}
+				} 
+			} else {
+				swal({title: "조회된 상품 정보가 없습니다.", closeOnClickOutside:false});
+			}
+			
 			mobileLoadingEnd();
 		}
 		
@@ -118,7 +180,7 @@
 		function itemConvertMap() {
 			return info = {
 					P_COMPANY_NAME : $("#i_company_name").val(),
-					P_ITEM_NO : $("#i_item_no").val(),
+					P_ITEM_NO : $("#i_search_no").val(),
 					P_VENDOR_ITEM_NAME : $("#i_vendor_item_name").val(),
 					P_VENDOR_PRICE  : $("#i_vendor_price").val(),
 					P_COUNT  : $("#i_count").val(),
@@ -132,7 +194,7 @@
 		}
 		
 		function resetForm() {
-			$("#i_item_no").val('');
+			$("#i_search_no").val('');
 			$("#i_vendor_item_name").val('');
 			$("#i_vendor_price").val('');
 			$("#i_count").val('');
@@ -166,7 +228,6 @@
 			$.ajax({
 				method : "POST",
 				url : "/item/initOrder.do",
-				url : "/item/checkOrder.do",
 				data : {data : JSON.stringify(param)},
 				dataType : "JSON",
 				success : sucInitOrder,
@@ -182,9 +243,9 @@
 			var returnData = data.returnData;
 			
 			if(returnData.RESULT) {
-				swal({title:returnData.RESULT_MSG, text: returnData.RESULT_VALUE, icon:"success",closeOnClickOutside:false}).then(() => {$(location).attr('href','/manualOrder.do');});
+				swal({title:returnData.TITLE, text: returnData.TEXT, icon:"success",closeOnClickOutside:false}).then(() => {$(location).attr('href','/dashboard.do');});
 			} else {
-				swal({title: returnData.RESULT_MSG, text: returnData.RESULT_VALUE, icon: "warning", closeOnClickOutside: false});
+				swal({title: returnData.TITLE, text: returnData.TEXT, icon: "warning", closeOnClickOutside: false});
 			}
 			
 		}
@@ -193,7 +254,7 @@
 	<body>	
 		<header>
 			<div class="header_inner">
-			<h1 class="al_center">사입/배송</h1>
+			<h1 class="al_center">사입 요청</h1>
 			<div class="nav_bt_box"><a href="#" class="nav_bt">전체메뉴</a></div>
 			</div>
 		</header>
@@ -214,12 +275,12 @@
 							<td colspan="1">
 								<select class="nomal_input" id="i_company_name" style="width:100%;">
 									<option value="모던블랑코">모던</option>
-									<option value="야미블링">야미</option>
+<!-- 									<option value="야미블링">야미</option> -->
 <!-- 									<option value="나금샵">나금</option> -->
 								</select>
 							</td>
 							<td colspan="2">
-								<input type="text" class="nomal_input" style="width:100%;" placeholder="상품번호" id="i_item_no" autocomplete="off" />
+								<input type="text" class="nomal_input" style="width:100%;" placeholder="상품번호/상품주문번호" id="i_search_no" autocomplete="off" />
 							</td>
 							<td colspan="2">
 								<a class="search_bt" onClick="getItemInfo()" >

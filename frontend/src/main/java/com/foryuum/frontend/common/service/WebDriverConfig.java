@@ -22,10 +22,11 @@ public class WebDriverConfig {
         System.setProperty("webdriver.chrome.driver", driverPath);
 
         ChromeOptions options = new ChromeOptions();
-//        options.addArguments("--headless");    // 헤드리스 모드 활성화
-//        options.addArguments("--no-sandbox");  // 보안 모드 비활성화 (리눅스에서 필요할 수 있음)
-//        options.addArguments("--disable-dev-shm-usage");  // DevTools 프로토콜 비활성화
-
+        options.addArguments("--headless");    // 헤드리스 모드 활성화
+        options.addArguments("--no-sandbox");  // 보안 모드 비활성화 (리눅스에서 필요할 수 있음)
+        options.addArguments("--disable-dev-shm-usage");  // DevTools 프로토콜 비활성화
+        options.addArguments("--disable-application-cache"); // 캐시 비활성화
+//        options.addArguments("--disable-session-crashed-bubble"); // 세션 저장 비활성화
         return new ChromeDriver(options);
     }
 }

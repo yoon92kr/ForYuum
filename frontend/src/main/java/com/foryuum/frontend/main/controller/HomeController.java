@@ -109,14 +109,14 @@ public class HomeController {
 	}
 
 	@GetMapping("/dashboard.do")
-	public String moveMenu(HttpServletRequest request, HttpSession session) throws IOException, CommonException {
+	public String goDashboard(HttpServletRequest request, HttpSession session) throws IOException, CommonException {
 		/* 사용자 정보가 Session에 없는 경우, 로그인 화면으로 리다이렉트 */
 		if (!SessionUtil.hasUserInfo(request)) {
 			setRsaInfo(request);
 			return "redirect:/login.do";
 		}
 
-		return CommonUtil.isMobile(session) ? "manualOrder" : "/dashboard";
+		return CommonUtil.isMobile(session) ? "/mobile/manualOrder" : "/dashboard";
 	}
 
 	private void setRsaInfo(HttpServletRequest request) throws CommonException {

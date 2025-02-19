@@ -1,4 +1,4 @@
-package com.foryuum.frontend.linkage;
+package com.foryuum.frontend.linkage.service;
 
 import java.time.Duration;
 import java.util.List;
@@ -16,6 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.foryuum.frontend.common.service.WebDriverConfig;
+import com.foryuum.frontend.common.util.LinkageUtil;
 
 public class Ecount {
 
@@ -27,7 +28,7 @@ public class Ecount {
 
 	public Ecount() {
 		this.webDriver = WebDriverConfig.webDriver();
-		wait = new WebDriverWait(webDriver, Duration.ofSeconds(3));
+		wait = new WebDriverWait(webDriver, Duration.ofSeconds(5));
 		actions = new Actions(webDriver);
 	    jsExecutor = (JavascriptExecutor) webDriver;
 	}
@@ -50,10 +51,10 @@ public class Ecount {
 		}
 	}
 	
-	public void ecountProcess(Map<String, Object> resultMap, List<Map<String, Object>> orderList) {
+	public void ecountProcess(Map<String, Object> returnData, List<Map<String, Object>> orderList) {
 		try {
 			String lastDeliverInfo = "";
-	
+			Thread.sleep(3000);
 			WebElement saveButton = wait.until(ExpectedConditions.elementToBeClickable(By.id("group3slipSavePrint")));
 			/* 1. 배송 정보 입력 */
 			for (int i = 0 ; i < orderList.size(); i++) {
@@ -115,20 +116,17 @@ public class Ecount {
 	        
 	        if(resultCount > 0) {
 	        	StringBuilder sb = new StringBuilder();
-	        	sb.append(resultMap.get("RESULT_VALUE"));
+	        	sb.append(returnData.get("RESULT_VALUE"));
 	        	sb.append("\n 배송 건수 : ");
 	        	sb.append(resultCount);
 	        	sb.append("건");
 	        	
-	        	resultMap.put("RESULT_VALUE", sb.toString());
+	        	returnData.put("RESULT_VALUE", sb.toString());
 	        }
 	
 		} catch (Exception e) {
 			LOG.error("ecountProcess Exception :: {}", e);
-			
-            resultMap.put("RESULT", false);
-            resultMap.put("RESULT_MSG", "배송 요청에 실패했습니다.");
-            resultMap.put("RESULT_VALUE", "뭔가 이상합니다.\\n 아빠를 불러주세요!");
+			LinkageUtil.setReult(returnData, false, "배송 요청 실패",  "뭔가 이상합니다.\n 아빠를 불러주세요!");
 		} finally {
 			logout();
 		}

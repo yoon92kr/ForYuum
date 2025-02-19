@@ -13,12 +13,14 @@ import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.foryuum.frontend.common.ComConstant;
+import com.foryuum.frontend.common.util.CommonUtil;
+import com.foryuum.frontend.common.util.LinkageUtil;
 import com.foryuum.frontend.common.util.SessionUtil;
 import com.foryuum.frontend.common.vo.UserInfoVo;
-import com.foryuum.frontend.linkage.Ecount;
-import com.foryuum.frontend.linkage.Feel;
-import com.foryuum.frontend.linkage.NaverStore;
-import com.foryuum.frontend.linkage.Shuline;
+import com.foryuum.frontend.linkage.service.Ecount;
+import com.foryuum.frontend.linkage.service.Feel;
+import com.foryuum.frontend.linkage.service.NaverStore;
+import com.foryuum.frontend.linkage.service.Shuline;
 
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpSession;
@@ -31,9 +33,28 @@ public class ItemService {
 
 	@Resource(name = "sqlSession")
 	private SqlSessionTemplate sqlSession;
+	
+	@Resource(name = "naverStore")
+	private NaverStore naverStore;
 
-	public Map<String, Object> getItemInfo(Map<String, Object> requestData) {
+
+	public Map<String, Object> getItemInfoByItemNo(Map<String, Object> requestData) {
 		return sqlSession.selectOne(NAME_SPACE + "GET_ITEM_INFO", requestData);
+	}
+	
+	public  Map<String, Object> getItemInfoByItemOrderNo(HttpSession session, Map<String, Object> requestData) {
+		Map<String, Object> returnData = new HashMap<String, Object>();
+		
+		try {
+			Map<String, Object> loginInfo = getLoginInfo(session, ComConstant.MODERN);
+			if(!CommonUtil.isNullOrEmpty(loginInfo)) {
+				naverStore.getItemInfoByItemOrderNo(loginInfo, returnData, requestData);
+			}
+		}catch (Exception e) {
+			LOG.error("getItemInfoByItemOrderNo Exception :: {}", e);
+		}
+		
+		return returnData;
 	}
 
 	public Map<String, Object> getLoginInfo(HttpSession session, String systemId) {
@@ -85,24 +106,6 @@ public class ItemService {
 	    
 	}
 	
-	public  Map<String, Object> checkOrder(HttpSession session) {
-		Map<String, Object> returnData = new HashMap<String, Object>();
-		
-		try {
-			Map<String, Object> modernLoginInfo = getLoginInfo(session, ComConstant.MODERN);
-			
-//			NaverStore naverStore = new NaverStore();
-//			if(naverStore.login(modernLoginInfo, returnData)) {
-//				Long timestamp = System.currentTimeMillis();
-//				naverStore.naverProcess(returnData); // 네이버스토어 로그인 성공 시, 주문목록 조회 시작
-//			}
-		}catch (Exception e) {
-			LOG.error("checkOrder Exception :: {}", e);
-		}
-		
-		return returnData;
-	}
-	
 	public void fellProcess(HttpSession session, Map<String, Object> requestData, Map<String, Object> returnData, List<Map<String, Object>> orderList) {
 		try {
 			if (orderList.size() > 0) {
@@ -122,9 +125,7 @@ public class ItemService {
 					ecount.ecountProcess(returnData, orderList);
 				}
 			} else {
-				returnData.put("RESULT", false);
-				returnData.put("RESULT_MSG", "요청 정보가 없습니다.");
-				returnData.put("RESULT_VALUE", "양식을 다시 한번 확인해주세요!");				
+				LinkageUtil.setReult(returnData, false, "주문 정보 없음", "주문 정보가 없습니다!\n다시 확인해주세요.");
 			}
 
 		} catch (Exception e) {
@@ -142,8 +143,7 @@ public class ItemService {
 				shuline.login(feelLoginInfo);
 				shuline.shulineProcess(returnData, orderList);
 			} else {
-				returnData.put("RESULT", false);
-				returnData.put("RESULT_MSG", "요청 정보가 없습니다.");
+				LinkageUtil.setReult(returnData, false, "주문 정보 없음", "주문 정보가 없습니다!\n다시 확인해주세요.");
 			}
 
 		} catch (Exception e) {

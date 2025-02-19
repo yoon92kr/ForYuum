@@ -8,9 +8,7 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<title>Error</title>
 	</head>
-
 	<style type="text/css">
-		/* 기본 스타일 */
 		#error_box {
 			text-align: center;
 			display: inline-block;
@@ -26,10 +24,17 @@
 			padding-bottom: 5px;
 		}
 		
-		#error_box p {
+		#error_box a {
 			margin: 0;
 			font-size: 13px;
 			color: #9E9E9E;
+			text-decoration: none;
+			color: inherit;
+		}
+		
+		a:hover, a:active, a:focus, a:visited {
+			color: inherit; 
+			text-decoration: none; 
 		}
 		
 		body, html {
@@ -51,7 +56,6 @@
 			text-align: center;
 			vertical-align: middle;
 		}
-		
 		/* 모바일 화면에서만 적용되는 스타일 */
 		@media screen and (max-width: 767px) {
 			table {
@@ -66,15 +70,15 @@
 			}
 		}
 	</style>
-
 	<body>
-		<table>
+		<table id="error_msg">
 			<tr>
 				<td align="center"><img src="img/main_img.png" /></td>
 				<td>
 					<div id="error_box">
 						<h2>ERROR</h2>
-						<p>무언가 단단히 잘못됬어요.</p>
+						<a href="home.do">무언가 단단히 잘못됬어요.</a> <br>
+						<a href="home.do">로그인 화면으로 돌아가요...</a>
 					</div>
 				</td>
 			</tr>
