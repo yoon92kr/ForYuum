@@ -1,6 +1,8 @@
 package com.foryuum.frontend.linkage.service;
 
 import java.time.Duration;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -136,6 +138,10 @@ public class Ecount {
 		webDriver.get(webDriver.getCurrentUrl() + "#menuType=6&amp;menuSeq=9003&amp;groupSeq=1&amp;prgId=E040204");
 	}
 
+	public void moveTrackingInfo() {
+		webDriver.get(webDriver.getCurrentUrl() + "#menuType=6&menuSeq=9008&groupSeq=1&prgId=E040305&depth=3");
+	}
+	
 	public void logout() {
 		webDriver.get("https://c-portalab.ecount.com/login/logout");
 		webDriver.quit();
@@ -186,5 +192,50 @@ public class Ecount {
 	    inputElement.clear();
 	    inputElement.sendKeys(value);
 	} 
+	
+	public List<Map<String, String>> getTrackingNumber() {
+		List<Map<String, String>> returnData = new ArrayList<Map<String, String>>();
+
+		try {
+			Thread.sleep(3000);
+			moveTrackingInfo();
+			Thread.sleep(3000);
+			WebElement searchBtn = wait.until(ExpectedConditions.elementToBeClickable(By.id("searchGroup")));
+			
+			WebElement date = wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("input.form-control[data-index='2'][data-role-index='2'][data-cid='cmbSumFlagDate']")));
+			date.clear();
+			Thread.sleep(1000);
+			date.sendKeys("10");
+			
+			Thread.sleep(1000);
+			searchBtn.click();
+			
+			WebElement table = wait.until(ExpectedConditions.elementToBeClickable(By.id("grid-main")));
+			List<WebElement> trs = table.findElements(By.tagName("tr"));
+
+			for (WebElement tr : trs) {
+			    List<WebElement> tds = tr.findElements(By.tagName("td"));
+			    if (tds.size() == 4) {
+		    		String shippingDt = tds.get(0).findElement(By.tagName("span")).getText();
+		    		String receiverName = tds.get(1).findElement(By.tagName("span")).getText();
+		    		String trackingNum = tds.get(2).findElement(By.tagName("span")).getText();
+		    		
+		    		Map<String, String> map = new HashMap<String, String>();
+	    			map.put("P_RESULT", trackingNum.matches("\\d+") ? "" : "F");
+		    		map.put("P_SHIPPING_DT", shippingDt);
+		    		map.put("P_RECEIVER_NAME", receiverName);
+		    		map.put("TRACKING_NUMBER", trackingNum);
+		    		
+		    		returnData.add(map);
+			    }
+			}
+		}  catch (Exception e) {
+			LOG.error("getTrackingNumber Exception :: {}", e);
+		} finally {
+			logout();
+		}
+		
+		return returnData;
+	}
 
 }

@@ -25,4 +25,45 @@
 			USER_ID = #{P_USER_ID} 
 			AND SYSTEM_ID = #{P_SYSTEM_ID}
     </select>
+    
+    <!-- 상품주문번호로 사입/배송 신청 시, 주문 정보 입력 -->
+    <insert id="INSERT_ORDER_INFO" parameterType="java.util.List">
+		INSERT INTO 
+			ORDER_INFO(PRODUCT_ORDER_ID, RECEIVER_NAME, REG_DT, SHIPPING_DT, RESULT)
+		VALUES
+	    <foreach collection="list" item="item" separator=",">
+	        (
+		        #{item.P_PRODUCT_ORDER_ID}, 
+		        #{item.P_NAME}, 
+		        CONVERT_TZ(NOW(3), @@GLOBAL.TIME_ZONE, 'ASIA/SEOUL'), 
+		        DATE_FORMAT(CONVERT_TZ(DATE_ADD(NOW(3), INTERVAL 1 DAY), @@GLOBAL.TIME_ZONE, 'ASIA/SEOUL'), '%Y/%m/%d'),
+		        'F'
+	        )
+	    </foreach>
+        ON DUPLICATE KEY UPDATE
+   			REG_DT = CONVERT_TZ(NOW(3), @@GLOBAL.TIME_ZONE, 'ASIA/SEOUL');
+    </insert>
+    
+    <!-- 수령인, 예상 발송일에 해당하는 상품주문번호 조회 -->
+    <select id="GET_ORDER_INFO" parameterType="hashMap" resultType="hashMap">
+		SELECT
+			PRODUCT_ORDER_ID
+		FROM 
+			ORDER_INFO
+		WHERE 
+			RECEIVER_NAME = #{P_RECEIVER_NAME} 
+			AND SHIPPING_DT = #{P_SHIPPING_DT} 
+			AND RESULT = 'S'
+    </select>
+    
+    <!-- 송장 업데이트 후, 주문 정보 현행화 -->
+    <update id="UPDATE_ORDER_INFO" parameterType="hashMap">
+		UPDATE ORDER_INFO
+			SET RESULT = #{P_RESULT} 
+		WHERE 
+			RECEIVER_NAME = #{P_RECEIVER_NAME} 
+			AND SHIPPING_DT = #{P_SHIPPING_DT} 
+			AND RESULT = 'S'
+			AND PRODUCT_ORDER_ID = #{P_PRODUCT_ORDER_ID} 
+    </update>
 </mapper>

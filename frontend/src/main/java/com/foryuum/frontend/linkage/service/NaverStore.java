@@ -2,6 +2,9 @@ package com.foryuum.frontend.linkage.service;
 
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.HashMap;
@@ -24,6 +27,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.foryuum.frontend.common.ComConstant;
 import com.foryuum.frontend.common.util.CommonUtil;
@@ -32,6 +36,7 @@ import com.foryuum.frontend.item.service.ItemService;
 import com.foryuum.frontend.linkage.vo.Delivery;
 import com.foryuum.frontend.linkage.vo.NaverResponse;
 import com.foryuum.frontend.linkage.vo.NaverShippingInfo;
+import com.foryuum.frontend.linkage.vo.Order;
 import com.foryuum.frontend.linkage.vo.ProductOrder;
 
 import jakarta.annotation.Resource;
@@ -46,14 +51,16 @@ public class NaverStore {
 	private ItemService itemService;
 	
 	public void getItemInfoByItemOrderNo (Map<String, Object> loginInfo, Map<String, Object> returnData, Map<String, Object> requestData) {
-		String authToken = getAuthToken(loginInfo, returnData);
+		String authToken = getAuthToken(loginInfo);
 		
 		if(!CommonUtil.isNullOrEmpty(authToken)) {
 			getItemInfo(authToken, requestData, returnData);
+		} else {
+			LinkageUtil.setReult(returnData, false, "주문 정보 조회 실패",  "뭔가 이상합니다.\n 아빠를 불러주세요!");
 		}
 	}
 	
-	public String getAuthToken(Map<String, Object> loginInfo, Map<String, Object> returnData) {
+	public String getAuthToken(Map<String, Object> loginInfo) {
 		String authToken = "";
 		
 		try {
@@ -85,13 +92,11 @@ public class NaverStore {
                     JSONObject jResult = JSONObject.fromObject(responseBody);
                     authToken = jResult.getString("access_token");
                     LOG.info("Get NaverStore Auth Token Success");
-                } else {
-                	LinkageUtil.setReult(returnData, false, "주문 정보 조회 실패",  "뭔가 이상합니다.\n 아빠를 불러주세요!");
-                }
+                } 
             } else if (response.getStatusCode() == HttpStatus.INTERNAL_SERVER_ERROR){
-            	LinkageUtil.setReult(returnData, false, "네이버 커머스 시스템 오류",  "네이버가 일을 하고있나봐요. 지금은 사용할 수 없어요.");
+            	LOG.error("getAuthToken Error : 네이버 커머스 서버 다운");
             } else {
-            	LinkageUtil.setReult(returnData, false, "주문 정보 조회 실패",  "뭔가 이상합니다.\n 아빠를 불러주세요!");
+            	LOG.error("getAuthToken Error : 토큰 정보 조회 연동 실패");
             }
             
 		} catch (Exception ex) {
@@ -123,14 +128,17 @@ public class NaverStore {
 	        if (response.getStatusCode() == HttpStatus.OK) {
 	        	Map<String, Object> convertMap = new HashMap<String, Object>();
 
-	        	String jsonResponse = response.getBody(); // 실제적인 JSON 문자열로 교체
+	        	String jsonResponse = response.getBody();
 	            ObjectMapper objectMapper = new ObjectMapper();
-
 	            NaverResponse naverResponse = objectMapper.readValue(jsonResponse, NaverResponse.class);
+	            
 	        	ProductOrder productOrder = naverResponse.getData().get(0).getProductOrder();
 	        	Delivery delivery = naverResponse.getData().get(0).getDelivery();
+	        	Order order = naverResponse.getData().get(0).getOrder();
 	        	NaverShippingInfo shippingInfo = productOrder.getShippingAddress();
-	        	
+	        	ZonedDateTime zonedDateTime = ZonedDateTime.parse(order.getOrderDate(), DateTimeFormatter.ISO_OFFSET_DATE_TIME);
+	        	String formattedDate = zonedDateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+	              
 	        	requestData.put("P_ITEM_NO", productOrder.getProductId());
 	        	Map<String, Object> itemInfo = itemService.getItemInfoByItemNo(requestData);
 	        	
@@ -139,6 +147,10 @@ public class NaverStore {
 	        	convertMap.put("ORDER_COUNT", productOrder.getQuantity());
 	        	convertMap.put("VENDOR_NAME", itemInfo.get("VENDOR_NAME"));
 	        	convertMap.put("ORDER_ITEM_OPTION", productOrder.getProductOption());
+	        	
+	        	convertMap.put("ORDERER_NAME", order.getOrdererName());
+	        	convertMap.put("ORDERER_ID", order.getOrdererId());
+	        	convertMap.put("ORDER_DATE", formattedDate);
 	        	
 	        	convertMap.put("RECEIVER_NAME", shippingInfo.getName());
 	        	convertMap.put("RECEIVER_ADDRES", shippingInfo.getDetailedAddress() + " " + shippingInfo.getDetailedAddress());
@@ -178,12 +190,52 @@ public class NaverStore {
 		}
 	}
 	
+	public boolean setTrackingNumber (String authToken, Map<String, String> requestData) {
+		boolean result = false;
+		try {
+			// 요청 본문 데이터 준비
+			HttpHeaders headers = new HttpHeaders();
+			headers.setContentType(MediaType.APPLICATION_JSON);
+			headers.set("Authorization", "Bearer " + authToken);
+			
+			ZoneId kstZone = ZoneId.of("Asia/Seoul");
+			ZonedDateTime nowKST = ZonedDateTime.now(kstZone);
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
+			String formattedDate = nowKST.format(formatter);
+			
+			String requestBody = "";
+			requestBody += "{";
+			requestBody += "\"productOrderId\": \"" + requestData.get("P_PRODUCT_ORDER_ID") + "\"";
+			requestBody += ", \"deliveryMethod\": \"DELIVERY\"";
+			requestBody += ", \"deliveryCompanyCode\": \"HANJIN\"";
+			requestBody += ", \"productOrderId\": \"" + requestData.get("TRACKING_NUMBER") + "\"";
+			requestBody += ", \"dispatchDate\": \"" + formattedDate + "\"";
+			requestBody += "}";
+			
+			HttpEntity<String> entity = new HttpEntity<>(requestBody, headers);
+			
+			// RestTemplate을 사용하여 API 요청
+			RestTemplate restTemplate = new RestTemplate();
+			ResponseEntity<String> response = restTemplate.exchange(
+					"https://api.commerce.naver.com/external/v1/pay-order/seller/product-orders/dispatch", HttpMethod.POST, entity, String.class);
+			
+			if (response.getStatusCode() == HttpStatus.OK) {
+		        ObjectMapper objectMapper = new ObjectMapper();
+		        JsonNode successProductOrderIds = objectMapper.readTree(response.getBody())
+		                .path("data").path("successProductOrderIds");
+
+		        result = successProductOrderIds.isArray() && successProductOrderIds.size() > 0;
+			}
+			
+		} catch (Exception ex) {
+			LOG.error("setTrackingNumber Error", ex);
+		}
+        return result;
+	}
+	
     public static String generateSignature(String clientId, String clientSecret, Long timestamp) {
-        // 밑줄로 연결하여 password 생성
         String password = StringUtils.joinWith("_", clientId, timestamp);
-        // bcrypt 해싱
         String hashedPw = BCrypt.hashpw(password, clientSecret);
-        // base64 인코딩
         return Base64.getUrlEncoder().encodeToString(hashedPw.getBytes(StandardCharsets.UTF_8));
     }
 }

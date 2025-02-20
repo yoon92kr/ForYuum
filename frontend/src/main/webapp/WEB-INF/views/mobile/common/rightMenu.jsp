@@ -43,7 +43,8 @@
 				<h1>For Yuum</h1>
 				<div class="right_nav_box">
 					<ul>
-						<li><a href="manualOrder.do">사입 요청</a></li>
+						<li><a href="item/manualOrder.do">사입 요청</a></li>
+<!-- 						<li><a href="item/orderHis.do">사입 내역</a></li> -->
 						<li><a href="logout.do">로그아웃</a></li>
 					</ul>
 				</div>

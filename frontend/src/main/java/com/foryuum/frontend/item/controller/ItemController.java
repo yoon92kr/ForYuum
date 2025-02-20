@@ -15,7 +15,6 @@ import com.foryuum.frontend.item.service.ItemService;
 
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import net.sf.json.JSONObject;
 
@@ -31,6 +30,11 @@ public class ItemController {
 		return "/mobile/manualOrder";
 	}
 	
+	@GetMapping("/orderHis.do")
+	public String goOrderHis(HttpServletRequest request, HttpSession session) throws CommonException {
+		return "/mobile/orderHis";
+	}
+	
 	@ResponseBody
 	@PostMapping("/getItemInfoByItemNo.do")
 	public JSONObject getItemInfo(HttpServletRequest request, HttpSession session, @RequestParam Map<String, Object> requestData) throws CommonException, IOException {
@@ -42,11 +46,9 @@ public class ItemController {
 	
 	@ResponseBody
 	@PostMapping("/getItemInfoByItemOrderNo.do")
-	public JSONObject getItemInfoByItemOrderNo(HttpServletResponse response, HttpServletRequest request, HttpSession session, @RequestParam Map<String, Object> requestData) throws CommonException, IOException {
+	public JSONObject getItemInfoByItemOrderNo(HttpServletRequest request, HttpSession session, @RequestParam Map<String, Object> requestData) throws CommonException, IOException {
 		JSONObject jo = new JSONObject();
 		jo.put("returnData", itemService.getItemInfoByItemOrderNo(session, requestData));
-	    System.out.println("Content-Type: " + response.getContentType());
-	    System.out.println("Character Encoding: " + response.getCharacterEncoding());
 	    
 		return jo;
 	}

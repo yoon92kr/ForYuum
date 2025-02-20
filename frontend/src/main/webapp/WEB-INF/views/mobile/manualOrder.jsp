@@ -33,6 +33,7 @@
 	<script type="text/javascript">
 		const inputList = ["#i_vendor_item_name", "#i_vendor_price", "#i_count", "#i_vendor_item_option", "#i_name", "#i_address", "#i_mobile"];
 		const vendorList = ["예원", "리턴", "라잇", "어썸", "모뜨", "어바우트", "썸데이", "큐브", "베이드", "데이시크", "또또", "발랑", "그리블"];
+		var productOrderId = "";
 		var idx = 1;
 		var orderMap = {};
 
@@ -117,16 +118,21 @@
 				if (!vendorList.includes(itemInfo.VENDOR_NAME)) {
 					swal({title: "조회된 상품 정보가 없습니다.", closeOnClickOutside:false});
 				} else {
+					productOrderId = $("#i_search_no").val().trim();
 					 $("#i_vendor_item_name").val(itemInfo.VENDOR_ITEM_NAME);
 					 $("#i_vendor_price").val(convertNumber(itemInfo.VENDOR_PRICE));
 					 $("#i_count").val(itemInfo.ORDER_COUNT);
 					 $('#i_vendor_name').val(itemInfo.VENDOR_NAME).change();
 					 $("#i_vendor_item_option").val(itemInfo.ORDER_ITEM_OPTION);
+					
+					 $("#i_orderer_name").val(itemInfo.ORDERER_NAME);
+					 $("#i_orderer_id").val(itemInfo.ORDERER_ID);
+					 $("#i_order_date").val(itemInfo.ORDER_DATE);
 					 
-					$("#i_name").val(itemInfo.RECEIVER_NAME);
-					$("#i_address").val(itemInfo.RECEIVER_ADDRES);
-					$("#i_mobile").val(itemInfo.RECEIVER_MOBILE);
-					$("#i_note").val(itemInfo.SHIPPING_MEMO);
+					 $("#i_name").val(itemInfo.RECEIVER_NAME);
+					 $("#i_address").val(itemInfo.RECEIVER_ADDRES);
+					 $("#i_mobile").val(itemInfo.RECEIVER_MOBILE);
+					 $("#i_note").val(itemInfo.SHIPPING_MEMO);
 					
 					if(data.returnData.RESULT == true) {
 						swal({title: data.returnData.TITLE, text: data.returnData.TEXT, closeOnClickOutside:false});
@@ -179,6 +185,7 @@
 		
 		function itemConvertMap() {
 			return info = {
+					P_PRODUCT_ORDER_ID : productOrderId,
 					P_COMPANY_NAME : $("#i_company_name").val(),
 					P_ITEM_NO : $("#i_search_no").val(),
 					P_VENDOR_ITEM_NAME : $("#i_vendor_item_name").val(),
@@ -190,7 +197,7 @@
 					P_ADDRESS : $("#i_address").val(),
 					P_MOBILE : $("#i_mobile").val(),
 					P_NOTE : nullCheck($("#i_note").val())
-			};;
+			};
 		}
 		
 		function resetForm() {
@@ -204,6 +211,10 @@
 			$("#i_address").val('');
 			$("#i_mobile").val('');
 			$("#i_note").val('');
+			$("#i_orderer_name").val('');
+			$("#i_orderer_id").val('');
+			$("#i_order_date").val('');
+			productOrderId = "";
 		}
 		
 		function removeOrder(idx) {
@@ -334,6 +345,20 @@
 						</tr>
 						<tr>
 							<td colspan="1">
+								<input type="text" class="nomal_input" style="width:100%;" placeholder="주문자" id="i_orderer_name" autocomplete="off" disabled/>
+							</td>
+							<td colspan="2">
+								<input type="text" class="nomal_input" style="width:100%;" placeholder="네이버ID" id="i_orderer_id" autocomplete="off" disabled/>
+							</td>
+							<td colspan="4">
+								<input type="text" class="nomal_input" style="width:100%;" placeholder="주문일자" id="i_order_date" autocomplete="off" disabled />
+							</td>
+						</tr>
+						<tr>
+							<th>배송정보</th>
+						</tr>
+						<tr>
+							<td colspan="1">
 								<input type="text" class="nomal_input" style="width:100%;" placeholder="수령인" id="i_name" autocomplete="off" />
 							</td>
 							<td colspan="6">
@@ -352,7 +377,7 @@
 				</table>
 			</div>
 		</section>
-		<div class="list_box" id="main_table" style="min-height: 340px;">
+		<div class="list_box" id="main_table" style="min-height: 200px;">
 			<table class="list_tbl">
 				<thead>
 					<tr>

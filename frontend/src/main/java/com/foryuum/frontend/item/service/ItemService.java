@@ -68,6 +68,16 @@ public class ItemService {
 
 		return sqlSession.selectOne(NAME_SPACE + "GET_SYSTEM_LOGIN_INFO", requestData);
 	}
+	
+	public Map<String, Object> getLoginInfo(String userId, String systemId) {
+
+		Map<String, Object> requestData = new HashMap<String, Object>();
+
+		requestData.put("P_USER_ID", userId);
+		requestData.put("P_SYSTEM_ID", systemId);
+
+		return sqlSession.selectOne(NAME_SPACE + "GET_SYSTEM_LOGIN_INFO", requestData);
+	}
 
 	@SuppressWarnings("unchecked")
 	public  Map<String, Object> initOrder(HttpSession session, Map<String, Object> requestData) {
@@ -124,6 +134,10 @@ public class ItemService {
 					ecount.login(ecountLoginInfo);
 					ecount.ecountProcess(returnData, orderList);
 				}
+				
+				if((boolean) returnData.get("RESULT")) {
+					insertOrderInfo(orderList);
+				}
 			} else {
 				LinkageUtil.setReult(returnData, false, "주문 정보 없음", "주문 정보가 없습니다!\n다시 확인해주세요.");
 			}
@@ -149,6 +163,29 @@ public class ItemService {
 		} catch (Exception e) {
 			LOG.error("orderToFeel Exception :: {}", e);
 		}
+	}
+	
+	public void insertOrderInfo(List<Map<String, Object>> orderList) {
+		sqlSession.insert(NAME_SPACE + "INSERT_ORDER_INFO", orderList);
+	}
+	
+	public void setTrackingNumber(Map<String, Object> loginInfo, Map<String, String> requestData) {
+		String productOrderId = sqlSession.selectOne(NAME_SPACE + "GET_ORDER_INFO", requestData);
+		requestData.put("P_PRODUCT_ORDER_ID", productOrderId);
+		
+		String authToken = naverStore.getAuthToken(loginInfo);
+		
+		if(CommonUtil.isNullOrEmpty(authToken)) {
+			requestData.put("P_RESULT", naverStore.setTrackingNumber(authToken, requestData) ? "T" : "F");
+		} else {
+			LOG.error("setTrackingNumber Error :: authToken 발급 실패");
+			requestData.put("P_RESULT", "F");
+		}
+		
+	}
+	
+	public void updateOrderInfo(Map<String, String> requestData) {
+		sqlSession.insert(NAME_SPACE + "UPDATE_ORDER_INFO", requestData);
 	}
 
 }
