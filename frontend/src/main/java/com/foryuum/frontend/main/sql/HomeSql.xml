@@ -5,7 +5,7 @@
 	<!-- 사용자 정보 조회 -->
     <select id="GET_USER_INFO" parameterType="hashMap" resultType="String">
 		SELECT 
-			CONVERT(AES_DECRYPT(UNHEX(USER_NAME), 'YUUM_SECURITY_KEY') USING UTF8) AS USER_NAME
+			CONVERT(AES_DECRYPT(UNHEX(USER_NAME), #{P_SECURITY_KEY}) USING UTF8) AS USER_NAME
 		FROM 
 			USER_INFO
 		WHERE
@@ -20,4 +20,18 @@
    		VALUES
    			(#{P_USER_ID}, CONVERT_TZ(NOW(3), @@GLOBAL.TIME_ZONE, 'ASIA/SEOUL'), #{P_ACCESS_TYPE}, #{P_IP_ADDRESS}, #{P_DEVICE_TYPE})
     </insert>
+    
+    <!-- PC환경 메뉴 리스트 조회 -->
+    <select id="UP_MENU_LIST_SELECT_BY_USER" parameterType="String" resultType="hashMap" statementType="CALLABLE">
+		SELECT 
+			ML.MENU_ID, ML.MENU_NAME, ML.P_MENU_ID, ML.URL_PATH, ML.MENU_DEPTH
+		FROM
+			USER_INFO AS UI
+			INNER JOIN MENU_BY_ROLE AS MR ON UI.ROLE_ID = MR.ROLE_ID 
+			INNER JOIN MENU_LIST AS ML ON MR.MENU_ID = ML.MENU_ID 
+		WHERE 
+			UI.USER_ID = #{P_USER_ID}
+		ORDER BY 
+			ML.SORT_NO;
+    </select>
 </mapper>

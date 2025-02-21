@@ -16,12 +16,14 @@
 	function doMenuSrch() {
 		$.ajax({
 			method : "post",
-			url : "<%=ComConstant.CONTEXT_ROOT %>/menuList.do",
+			url : "<%=ComConstant.CONTEXT_ROOT %>/getMenuList.do",
 			dataType : "JSON",
 			async : false,
-			beforeSend : beforeAjaxCommon,
 			success : sucDoMenuSrch,
-			error : errDoMenuSrch
+			error : function(xhr, status, error) {
+				mobileLoadingEnd();
+				commonHandleError(xhr, status, error,  "메뉴 조회중 오류가 발생 하였습니다.");
+			}
 		});
 	}
 	
@@ -39,12 +41,12 @@
 				var val = arrScreenMenu[i];
 				if(val.LEVELNO == 1){
 				    var urlPath = val.URLPATH == undefined ? '#' : val.URLPATH;
-                    firstInHtml += '<li onMouseEnter="showSubMenu(\'' + val.SCREENID + '\')"><a href="' + urlPath + '">' + val.SCREENNAME + '</a></li>';
+                    firstInHtml += '<li onMouseEnter="showSubMenu(\'' + val.MENU_ID + '\')"><a href="' + urlPath + '">' + val.MENU_NAME + '</a></li>';
 	
 					inHtml += '<li>';
 					inHtml += '<div>';
 					inHtml += '<div class="sub_nav_wrap">';
-					inHtml += '<ul id=\''+val.SCREENID+'\' class="dep2"></ul>';
+					inHtml += '<ul id=\''+val.MENU_ID+'\' class="dep2"></ul>';
 					inHtml += '</div>';
 					inHtml += '</div>';
 					inHtml += '</li>';
@@ -57,44 +59,19 @@
 		$("#ulLnb_depth").html(inHtml);
 	}
 	
-	function errDoMenuSrch(xhr,status,error){
-		if(xhr.status == 999) {
-			swal({title:"세션이 만료되었습니다. 다시 로그인하시기 바랍니다.",closeOnClickOutside:false}).then($(location).attr('href', 'login.do'));
-		} else {
-			swal({title:"메뉴 리스트 조회 중 오류가 발생하였습니다.",icon: "error",closeOnClickOutside:false});
-		}
-	}
-	
 	function showSubMenu(strScreenId) {
 		var secondInHtml ='';
 		for (var i = 0; i < arrScreenMenu.length; i++) {
-			if (arrScreenMenu[i].PSCREENID == strScreenId) {
-				if (null != arrScreenMenu[i].URLPATH && 'NULL' != arrScreenMenu[i].URLPATH) {
-					if(arrScreenMenu[i].SCREENID == "B0090_000" || arrScreenMenu[i].SCREENID == "B0110_000" ){
-						if(specificUser == true){
-							secondInHtml +=	'<li><a href="#" onClick="movePage(\''+arrScreenMenu[i].URLPATH+'\', \''+arrScreenMenu[i].SCREENID+'\', \''+arrScreenMenu[i].PATHNAME+'\')">'+ arrScreenMenu[i].SCREENNAME+'<span class="icon"></a>';
-							continue;
-						} else {
-							continue;
-						}
-					} else {
-						secondInHtml +=	'<li><a href="#" onClick="movePage(\''+arrScreenMenu[i].URLPATH+'\', \''+arrScreenMenu[i].SCREENID+'\', \''+arrScreenMenu[i].PATHNAME+'\')">'+ arrScreenMenu[i].SCREENNAME+'<span class="icon"></a>';
-					}
-				} else {
-					if (arrScreenMenu[i].SCREENID == "B0101_000") {
-						secondInHtml +=	'<li style="letter-spacing:-1px;"><a href="#">'+ arrScreenMenu[i].SCREENNAME+'<span class="icon"></a>';
-					} else { 
-						secondInHtml +=	'<li><a href="#">'+ arrScreenMenu[i].SCREENNAME+'<span class="icon"></a>';
-					}
-				}
+			if (arrScreenMenu[i].P_MENU_ID == strScreenId) {
+				secondInHtml +=	'<li><a href="#">'+ arrScreenMenu[i].MENU_NAME+'<span class="icon"></a>';
 				
 				secondInHtml +=	'<ul class="dep3">';
 				for (var z = 0; z < arrScreenMenu.length; z++) { 
-					if (arrScreenMenu[z].PSCREENID == arrScreenMenu[i].SCREENID) {
-						if (null != arrScreenMenu[z].URLPATH) {
-							secondInHtml +='<li><a href="#" onClick="movePage(\''+arrScreenMenu[z].URLPATH+'\', \''+arrScreenMenu[z].SCREENID+'\', \''+arrScreenMenu[z].PATHNAME+'\')">'+ arrScreenMenu[z].SCREENNAME+'<span class="icon"></a>';
+					if (arrScreenMenu[z].P_MENU_ID == arrScreenMenu[i].MENU_ID) {
+						if (null != arrScreenMenu[z].URL_PATH) {
+							secondInHtml +='<li><a href="#" onClick="movePage(\''+arrScreenMenu[z].URL_PATH+'\', \''+arrScreenMenu[z].MENU_ID+'\')">'+ arrScreenMenu[z].MENU_NAME+'<span class="icon"></a>';
 						} else {
-							secondInHtml +='<li><a href="#">'+ arrScreenMenu[z].SCREENNAME+'<span class="icon"></a></li>';
+							secondInHtml +='<li><a href="#">'+ arrScreenMenu[z].MENU_NAME+'<span class="icon"></a></li>';
 						}
 					}
 				}
@@ -105,28 +82,16 @@
 		}
 	}
 	
-	function movePage(url, screenId, pathName) {
+	function movePage(url, menuId) {
 		var $form = $('<form></form>');
 		$form.attr('action', url);
 		$form.attr('target', '_self');
 		$form.attr('method', 'post');
-		$form.appendTo('body');
-		$form.append($('<input type="hidden" name="SAVE_FLAG" value="M">'));
-		$form.append($('<input type="hidden" name="SCREENID" value="'+ screenId +'">'));
-		$form.append($('<input type="hidden" name="PATHNAME" value="'+ pathName +'">'));
 		$form.submit();
 	}
 </script>
+
 <div class="inr">
-    <div class="logo">
-        <h1>
-			<span>
-         		<a href="<%=ComConstant.CONTEXT_ROOT %>/home.do" style="display:inline-flex;width:160px;">
-         			<span style="color:#18c8c8;float:left;font-weight:bold; margin-left: 15px;">For Yuum</span>
-         		</a>
-			</span>
-        </h1>
-    </div>
     <div id="lnb_p" class="lnb_p"></div>
     <div class="gnb_p">
         <ul class="gnb_info">

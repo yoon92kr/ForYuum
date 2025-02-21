@@ -135,7 +135,7 @@
 	                        </div>
 	                    </div>
 	                </main>
-	                <jsp:include page="/WEB-INF/views//mobile/common/contentsFooter.jsp"/>
+	                <jsp:include page="/WEB-INF/views/common/contentsFooter.jsp"/>
 	            </div>
 	        </div>
 	    </div>

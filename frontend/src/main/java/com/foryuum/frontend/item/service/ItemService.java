@@ -30,7 +30,8 @@ public class ItemService {
 
 	private static final Logger LOG = LoggerFactory.getLogger(ItemService.class);
 	private final static String NAME_SPACE = "item.";
-
+	private final static String KEY = System.getProperties().getProperty("jasypt.security.key");
+	
 	@Resource(name = "sqlSession")
 	private SqlSessionTemplate sqlSession;
 	
@@ -65,6 +66,7 @@ public class ItemService {
 
 		requestData.put("P_USER_ID", userInfo.getUserId());
 		requestData.put("P_SYSTEM_ID", systemId);
+		requestData.put("P_SECURITY_KEY", KEY);
 
 		return sqlSession.selectOne(NAME_SPACE + "GET_SYSTEM_LOGIN_INFO", requestData);
 	}
@@ -75,6 +77,7 @@ public class ItemService {
 
 		requestData.put("P_USER_ID", userId);
 		requestData.put("P_SYSTEM_ID", systemId);
+		requestData.put("P_SECURITY_KEY", KEY);
 
 		return sqlSession.selectOne(NAME_SPACE + "GET_SYSTEM_LOGIN_INFO", requestData);
 	}

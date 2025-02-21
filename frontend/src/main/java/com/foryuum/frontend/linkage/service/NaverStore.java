@@ -116,8 +116,10 @@ public class NaverStore {
 	        headers.setContentType(MediaType.APPLICATION_JSON);
 	        headers.set("Authorization", "Bearer " + authToken);
 	
-	        String requestBody = "{ \"productOrderIds\": " + productOrderIds.toString() + ", \"quantityClaimCompatibility\": false }";
-	        HttpEntity<String> entity = new HttpEntity<>(requestBody, headers);
+	        JSONObject requestJson = new JSONObject();
+	        requestJson.put("productOrderIds", productOrderIds.toString());
+	        requestJson.put("quantityClaimCompatibility", false);
+	        HttpEntity<String> entity = new HttpEntity<>(requestJson.toString(), headers);
 	
 	        // RestTemplate을 사용하여 API 요청
 	        RestTemplate restTemplate = new RestTemplate();
@@ -203,16 +205,14 @@ public class NaverStore {
 			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
 			String formattedDate = nowKST.format(formatter);
 			
-			String requestBody = "";
-			requestBody += "{";
-			requestBody += "\"productOrderId\": \"" + requestData.get("P_PRODUCT_ORDER_ID") + "\"";
-			requestBody += ", \"deliveryMethod\": \"DELIVERY\"";
-			requestBody += ", \"deliveryCompanyCode\": \"HANJIN\"";
-			requestBody += ", \"productOrderId\": \"" + requestData.get("TRACKING_NUMBER") + "\"";
-			requestBody += ", \"dispatchDate\": \"" + formattedDate + "\"";
-			requestBody += "}";
+			JSONObject requestJson = new JSONObject();
+			requestJson.put("productOrderId", requestData.get("P_PRODUCT_ORDER_ID"));
+			requestJson.put("deliveryMethod", "DELIVERY");
+			requestJson.put("deliveryCompanyCode", "HANJIN");
+			requestJson.put("productOrderId", requestData.get("TRACKING_NUMBER"));
+			requestJson.put("dispatchDate", formattedDate);
 			
-			HttpEntity<String> entity = new HttpEntity<>(requestBody, headers);
+			HttpEntity<String> entity = new HttpEntity<>(requestJson.toString(), headers);
 			
 			// RestTemplate을 사용하여 API 요청
 			RestTemplate restTemplate = new RestTemplate();

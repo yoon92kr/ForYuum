@@ -25,6 +25,7 @@ public class HomeService {
 
 	private static final Logger LOG = LoggerFactory.getLogger(HomeService.class);
 	private final static String NAME_SPACE = "home.";
+	private final static String KEY = System.getProperties().getProperty("jasypt.security.key");
 
 	@Resource(name = "sqlSession")
 	private SqlSessionTemplate sqlSession;
@@ -43,7 +44,8 @@ public class HomeService {
 
 			paramData.put("P_USER_ID", userId);
 			paramData.put("P_USER_PASSWORD", password);
-
+			paramData.put("P_SECURITY_KEY", KEY);
+			
 			String userName = sqlSession.selectOne(NAME_SPACE + "GET_USER_INFO", paramData);
 
 			if (!CommonUtil.isNullOrEmpty(userName)) {

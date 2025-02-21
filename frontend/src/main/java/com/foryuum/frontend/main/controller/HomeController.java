@@ -94,7 +94,7 @@ public class HomeController {
 	}
 
 	@ResponseBody
-	@PostMapping("/menuList.do")
+	@PostMapping("/getMenuList.do")
 	public JSONObject getMenuList(HttpSession session) throws IOException, CommonException {
 		JSONObject joReturn = new JSONObject();
 
@@ -116,7 +116,7 @@ public class HomeController {
 			return "redirect:/login.do";
 		}
 
-		return CommonUtil.isMobile(session) ? "/mobile/manualOrder" : "/dashboard";
+		return CommonUtil.isMobile(session) ? "/mobile/manualOrder" : "/pc/dashboard";
 	}
 
 	private void setRsaInfo(HttpServletRequest request) throws CommonException {

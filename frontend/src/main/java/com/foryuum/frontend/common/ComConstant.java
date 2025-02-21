@@ -35,6 +35,7 @@ public class ComConstant {
 	
 	public static final String PURCHASE_DECIDED = "PURCHASE_DECIDED_NAME";
 	public static final String PURCHASE_DECIDED_NAME = "구매 확정";
+	
+	public static final String DEV = "DEV";
+	public static final String REAL = "REAL";
 }
-
-
