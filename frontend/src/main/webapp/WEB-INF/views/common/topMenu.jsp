@@ -39,8 +39,8 @@
 			firstInHtml += '<ul class="dep1">';
 			for(var i = 0; i< arrScreenMenu.length; i++){
 				var val = arrScreenMenu[i];
-				if(val.LEVELNO == 1){
-				    var urlPath = val.URLPATH == undefined ? '#' : val.URLPATH;
+				if(val.MENU_DEPTH == 1){
+				    var urlPath = val.URLPATH == undefined ? '#' : val.URL_PATH;
                     firstInHtml += '<li onMouseEnter="showSubMenu(\'' + val.MENU_ID + '\')"><a href="' + urlPath + '">' + val.MENU_NAME + '</a></li>';
 	
 					inHtml += '<li>';
@@ -59,11 +59,16 @@
 		$("#ulLnb_depth").html(inHtml);
 	}
 	
-	function showSubMenu(strScreenId) {
+	function showSubMenu(strMenuId) {
 		var secondInHtml ='';
 		for (var i = 0; i < arrScreenMenu.length; i++) {
-			if (arrScreenMenu[i].P_MENU_ID == strScreenId) {
-				secondInHtml +=	'<li><a href="#">'+ arrScreenMenu[i].MENU_NAME+'<span class="icon"></a>';
+			if (arrScreenMenu[i].P_MENU_ID == strMenuId) {
+				
+				if (isNotNull(arrScreenMenu[i].URL_PATH)) {
+					secondInHtml +=	'<li><a href="#" onClick="movePage(\''+arrScreenMenu[i].URL_PATH+'\', \''+arrScreenMenu[i].MENU_ID+'\')">'+ arrScreenMenu[i].MENU_NAME+'<span class="icon"></a>';
+				} else {
+					secondInHtml +=	'<li><a href="#">'+ arrScreenMenu[i].MENU_NAME+'<span class="icon"></a>';
+				}
 				
 				secondInHtml +=	'<ul class="dep3">';
 				for (var z = 0; z < arrScreenMenu.length; z++) { 
@@ -78,7 +83,7 @@
 				secondInHtml +='</ul>';
 				secondInHtml +='</li>';					
 			}
-			$("#"+strScreenId).html(secondInHtml);
+			$("#"+strMenuId).html(secondInHtml);
 		}
 	}
 	
@@ -86,12 +91,23 @@
 		var $form = $('<form></form>');
 		$form.attr('action', url);
 		$form.attr('target', '_self');
-		$form.attr('method', 'post');
+		$form.attr('method', 'GET');
+		$form.appendTo('body');
 		$form.submit();
 	}
 </script>
 
 <div class="inr">
+	<div class="logo">
+		<h1 style="font-size:30px;">
+			<span>
+         		<a href="<%=ComConstant.CONTEXT_ROOT %>/home.do" style="display:inline-flex;width:160px;">
+         			<span style="color:#6acd02;float:left;font-weight:bold; margin-left: 22px;">For</span>
+         			<span style="font-size:24px;float:left;font-weight:bold;color:#fff;line-height:35px;">Yuum</span>
+         		</a>
+			</span>
+        </h1>
+   	</div>
     <div id="lnb_p" class="lnb_p"></div>
     <div class="gnb_p">
         <ul class="gnb_info">

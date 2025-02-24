@@ -56,29 +56,29 @@
 			text-align: center;
 			vertical-align: middle;
 		}
-		/* 모바일 화면에서만 적용되는 스타일 */
+
 		@media screen and (max-width: 767px) {
 			table {
-				width: 95%; /* 모바일에서 너비를 더 크게 설정 */
-				max-width: none; /* 최대 너비 제한 없애기 */
+				width: 95%;
+				max-width: none; 
 			}
 			#error_box h2 {
-				font-size: 32px; /* 모바일에서 폰트 크기 조정 */
+				font-size: 32px; 
 			}
 			#error_box p {
-				font-size: 16px; /* 모바일에서 폰트 크기 조정 */
+				font-size: 16px; 
 			}
 		}
 	</style>
 	<body>
 		<table id="error_msg">
 			<tr>
-				<td align="center"><img src="img/main_img.png" /></td>
+				<td align="center"><img src="/img/main_img.png" /></td>
 				<td>
 					<div id="error_box">
 						<h2>ERROR</h2>
-						<a href="home.do">무언가 단단히 잘못됬어요.</a> <br>
-						<a href="home.do">로그인 화면으로 돌아가요...</a>
+						<a href="<%=ComConstant.CONTEXT_ROOT %>/home.do">무언가 단단히 잘못됬어요.</a> <br>
+						<a href="<%=ComConstant.CONTEXT_ROOT %>/home.do">로그인 화면으로 돌아가요...</a>
 					</div>
 				</td>
 			</tr>

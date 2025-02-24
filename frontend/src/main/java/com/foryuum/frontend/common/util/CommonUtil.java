@@ -40,6 +40,10 @@ public class CommonUtil {
 
 		return ComConstant.MOBILE.equals(deviceType);
 	}
+	
+	public static String getBasePath(HttpSession session) {
+		return isMobile(session) ? "/mobile" : "/pc";
+	}
 
 	public static Object nullCheck(Object value) {
 		return isNullOrEmpty(value) ? "" : value;

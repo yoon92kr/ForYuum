@@ -2,19 +2,6 @@ function hideLoading(doc) {
 	$('#loadingDiv').fadeOut();
 }
 
-function showLoading(doc) {
-	var innerHtml = "";
-	innerHtml += '<main id="guide-main" class="modal fade loader-system" style="width:100%;top:0;">';
-	innerHtml += '	<div class="loader-wrapper" style="width:100%; height:100%;">';
-	innerHtml += '	    <div class="cell" style="width:100%; height:100%;">';
-	innerHtml += '	      <div class="loading load2" style="width:100%; height:100%;">';
-	innerHtml += '		<div class="loader">';
-	innerHtml += '		  <div class="loader-inner line-scale-pulse-out"><div></div><div></div><div></div><div></div><div></div></div>';
-	innerHtml += '		  <span class="tooltip" style="height:44%;"><p>LOADING</p></span></div></div></div></div></div></main>';
-	doc.getElementById('loadingDiv').innerHTML = innerHtml;
-	$('#loadingDiv').fadeIn(200).css('display', 'table');
-}
-
 function isNull(value) {
 	return value == null || value == 'null' || value == 'undefined' || value == '';
 }
@@ -37,6 +24,23 @@ function commonHandleError(xhr, status, error, errMsg) {
 	}
 }
 
+function loading(doc) {
+	var innerHtml = "";
+	innerHtml += '<main id="guide-main" class="modal fade loader-system" style="width:100%;top:0;">';
+	innerHtml += '	<div class="loader-wrapper" style="width:100%; height:100%;">';
+	innerHtml += '	    <div class="cell" style="width:100%; height:100%;">';
+	innerHtml += '	      <div class="loading load2" style="width:100%; height:100%;">';
+	innerHtml += '		<div class="loader">';
+	innerHtml += '		  <div class="loader-inner line-scale-pulse-out"><div></div><div></div><div></div><div></div><div></div></div>';
+	innerHtml += '		  <span class="tooltip" style="height:44%;"><p>LOADING</p></span></div></div></div></div></div></main>';
+	doc.getElementById('loading').innerHTML = innerHtml;
+	$('#loading').fadeIn(200).css('display', 'table');
+}
+
+function hideLoading(doc) {
+	$('#loading').fadeOut();
+}
+
 function mobileLoading() {
 	var modal = $('.mobile-loading');
 	modal.fadeIn(300).css('display', 'table');
@@ -52,3 +56,25 @@ function mobileLoadingEnd() {
 function convertNumber(x) {
 	return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
+
+$(function() {
+	var lnbIdx;
+	$("body").on({
+		mouseenter: function() {
+			lnbIdx = $(this).index();
+			$('#header').addClass('open');
+			$('.lnb_depth > ul > li').children('div').hide();
+			$('.lnb_depth > ul > li').eq(lnbIdx).children('div').show();
+			$('.lnb_depth').stop(true, true).slideDown(400);
+		}
+	}, ".lnb_p > ul.dep1 > li");
+
+	$("body").on({
+		mouseleave: function() {
+			$('#header').removeClass('open');
+			$('.lnb_depth').stop(true, true).slideUp(400, function() {
+				$('.lnb_depth > ul > li').children('div').hide();
+			});
+		}
+	}, "#header");
+});

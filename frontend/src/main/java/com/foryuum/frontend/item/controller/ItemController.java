@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.foryuum.frontend.common.exception.CommonException;
+import com.foryuum.frontend.common.util.CommonUtil;
 import com.foryuum.frontend.item.service.ItemService;
 
 import jakarta.annotation.Resource;
@@ -27,7 +28,7 @@ public class ItemController {
 
 	@GetMapping("/manualOrder.do")
 	public String goManualOrderr(HttpServletRequest request, HttpSession session) throws CommonException {
-		return "/mobile/manualOrder";
+		return CommonUtil.getBasePath(session)+"/manualOrder";
 	}
 	
 	@GetMapping("/orderHis.do")
