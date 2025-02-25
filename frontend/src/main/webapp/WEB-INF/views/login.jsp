@@ -1,6 +1,12 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page import="com.foryuum.frontend.common.ComConstant"%>
+<%@ page import="java.text.SimpleDateFormat" %>
+<%@ page import="java.util.Date" %>
 <!DOCTYPE html>
+<%
+	SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
+	String strDate = sdf.format(new Date());
+%>
 <html lang="ko" dir="ltr">
     <head>
 		<meta property="og:title" content="For Yuum">
@@ -10,15 +16,14 @@
 	  
         <title><%=ComConstant.TITLE%></title>
         <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
-		<meta http-equiv="cache-Control" content="co-cache" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 	
-        <link rel="stylesheet" href="<%=ComConstant.CONTEXT_ROOT %>/css/common.css">
+        <link rel="stylesheet" href="<%=ComConstant.CONTEXT_ROOT %>/css/common.css?ver=<%=strDate %>">
         <link rel="stylesheet" href="<%=ComConstant.CONTEXT_ROOT %>/jquery/jquery-ui-1.14.1.min.css">
 		
         <script type="text/javascript" src="<%=ComConstant.CONTEXT_ROOT %>/jquery/jquery-3.7.1.min.js"></script>
         <script type="text/javascript" src="<%=ComConstant.CONTEXT_ROOT %>/jquery/jquery-ui-1.14.1.min.js"></script>
-        <script type="text/javascript" src="<%=ComConstant.CONTEXT_ROOT %>/js/common.js"></script>
+        <script type="text/javascript" src="<%=ComConstant.CONTEXT_ROOT %>/js/common.js?ver=<%=strDate %>"></script>
         <script type="text/javascript" src="<%=ComConstant.CONTEXT_ROOT %>/js/sweetalert.min.js"></script>
         
         <script type="text/javascript" src="<%=ComConstant.CONTEXT_ROOT %>/js/rsa/jsbn.js"></script>
