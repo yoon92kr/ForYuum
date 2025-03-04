@@ -2,11 +2,16 @@
 <%@ page import="com.foryuum.frontend.common.vo.UserInfoVo"%> 
 <%@ page import="com.foryuum.frontend.common.ComConstant"%>
 <%@ page import="com.foryuum.frontend.common.util.SessionUtil"%>
+<%@ page import="java.text.SimpleDateFormat" %>
+<%@ page import="java.util.Date" %>
 
 <!DOCTYPE html>
 <%
 	session = request.getSession();
 	UserInfoVo userInfo = SessionUtil.getUserInfo(session);
+
+	SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
+	String strDate = sdf.format(new Date());
 %>
 <html lang="ko" dir="ltr">
 	<head>
@@ -17,17 +22,16 @@
 		
         <title><%=ComConstant.TITLE%></title>
         <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
-		<meta http-equiv="cache-Control" content="co-cache" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 			
 
 		<link rel="stylesheet" href="<%=ComConstant.CONTEXT_ROOT %>/css/bootstrap.min.css"> 
         <link rel="stylesheet" href="<%=ComConstant.CONTEXT_ROOT %>/jquery/jquery-ui-1.14.1.min.css">
-        <link rel="stylesheet" href="<%=ComConstant.CONTEXT_ROOT %>/css/mobileCommon.css">
+        <link rel="stylesheet" href="<%=ComConstant.CONTEXT_ROOT %>/css/mobileCommon.css?ver=<%=strDate %>">
 		
         <script type="text/javascript" src="<%=ComConstant.CONTEXT_ROOT %>/jquery/jquery-3.7.1.min.js"></script>
         <script type="text/javascript" src="<%=ComConstant.CONTEXT_ROOT %>/jquery/jquery-ui-1.14.1.min.js"></script>
-        <script type="text/javascript" src="<%=ComConstant.CONTEXT_ROOT %>/js/common.js"></script>
+        <script type="text/javascript" src="<%=ComConstant.CONTEXT_ROOT %>/js/common.js?ver=<%=strDate %>"></script>
         <script type="text/javascript" src="<%=ComConstant.CONTEXT_ROOT %>/js/sweetalert.min.js"></script>
 	</head>
 	<script type="text/javascript">
@@ -186,6 +190,7 @@
 		function itemConvertMap() {
 			return info = {
 					P_PRODUCT_ORDER_ID : productOrderId,
+
 					P_COMPANY_NAME : $("#i_company_name").val(),
 					P_ITEM_NO : $("#i_search_no").val(),
 					P_VENDOR_ITEM_NAME : $("#i_vendor_item_name").val(),
@@ -196,7 +201,8 @@
 					P_NAME : $("#i_name").val(),
 					P_ADDRESS : $("#i_address").val(),
 					P_MOBILE : $("#i_mobile").val(),
-					P_NOTE : nullCheck($("#i_note").val())
+					P_NOTE : nullCheck($("#i_note").val()),
+					P_ORDERER_NAME : $("#i_orderer_name").val(),
 			};
 		}
 		

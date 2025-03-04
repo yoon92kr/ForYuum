@@ -202,11 +202,6 @@ public class Ecount {
 			Thread.sleep(3000);
 			WebElement searchBtn = wait.until(ExpectedConditions.elementToBeClickable(By.id("searchGroup")));
 			
-			WebElement date = wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("input.form-control[data-index='2'][data-role-index='2'][data-cid='cmbSumFlagDate']")));
-			date.clear();
-			Thread.sleep(1000);
-			date.sendKeys("10");
-			
 			Thread.sleep(1000);
 			searchBtn.click();
 			

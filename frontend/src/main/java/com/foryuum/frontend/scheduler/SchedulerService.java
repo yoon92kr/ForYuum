@@ -1,34 +1,34 @@
 package com.foryuum.frontend.scheduler;
 
-import java.time.LocalDate;
-import java.time.ZoneOffset;
-import java.util.List;
-import java.util.Map;
-
+import com.foryuum.frontend.common.ComConstant;
+import com.foryuum.frontend.common.util.CommonUtil;
+import com.foryuum.frontend.item.service.ItemService;
+import com.foryuum.frontend.linkage.service.CoolSMS;
+import com.foryuum.frontend.linkage.service.Ecount;
+import jakarta.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import com.foryuum.frontend.common.ComConstant;
-import com.foryuum.frontend.common.util.CommonUtil;
-import com.foryuum.frontend.item.service.ItemService;
-import com.foryuum.frontend.linkage.service.Ecount;
-
-import jakarta.annotation.Resource;
+import java.time.LocalDate;
+import java.time.ZoneOffset;
+import java.util.List;
+import java.util.Map;
 
 @Service
 public class SchedulerService {
 	private static final Logger LOG = LoggerFactory.getLogger(SchedulerService.class);
-	
+	private final static String RUN_MODE = System.getProperties().getProperty("jasypt.run.mode");
 	@Resource(name = "itemService")
 	private ItemService itemService;
-	
-	private final static String RUN_MODE = System.getProperties().getProperty("jasypt.run.mode");
+
+	@Resource(name = "coolSMS")
+	private CoolSMS coolSMS;
 	private boolean checkTrackingNumberFlag = true;
 	private LocalDate lastExecutedDate = LocalDate.now(ZoneOffset.ofHours(9));
 	
-	@Scheduled(cron = "0 */1 * * * *", zone="Asia/Seoul")
+	@Scheduled(cron = "0 */5 * * * *", zone="Asia/Seoul")
 	private void searchTrackingNumberProcess() {
 		if(RUN_MODE.equals(ComConstant.REAL)) {
 			LocalDate today = LocalDate.now(ZoneOffset.ofHours(9)); 
@@ -47,19 +47,26 @@ public class SchedulerService {
 				
 				List<Map<String, String>> returnData = ecount.getTrackingNumber();
 				
-				if(returnData.size() > 0) {
-					Map<String, Object> naverLoginInfo = itemService.getLoginInfo("", "");
+				if(!returnData.isEmpty()) {
+					StringBuilder sb = new StringBuilder();
+					sb.append("■ ");
+					sb.append(today);
+					sb.append(" 송장 처리 결과 ■\n");
+					Map<String, Object> naverLoginInfo = itemService.getLoginInfo("olaf", ComConstant.MODERN);
 					for(Map<String, String> requestData : returnData) {
 						if(CommonUtil.isNullOrEmpty(requestData.get("P_RESULT"))) {
-							itemService.setTrackingNumber(naverLoginInfo, requestData);
+							String resultMsg = itemService.setTrackingNumber(naverLoginInfo, requestData);
+							sb.append(resultMsg);
 						}
 						itemService.updateOrderInfo(requestData);
 					}
-					
+
+					coolSMS.sendLms(sb.toString());
 					checkTrackingNumberFlag = false;
 				}
 			}
 		}
+
 	}
 	
 	@Scheduled(cron = "0 0 * * * *")

@@ -172,19 +172,31 @@ public class ItemService {
 		sqlSession.insert(NAME_SPACE + "INSERT_ORDER_INFO", orderList);
 	}
 	
-	public void setTrackingNumber(Map<String, Object> loginInfo, Map<String, String> requestData) {
-		String productOrderId = sqlSession.selectOne(NAME_SPACE + "GET_ORDER_INFO", requestData);
-		requestData.put("P_PRODUCT_ORDER_ID", productOrderId);
+	public String setTrackingNumber(Map<String, Object> loginInfo, Map<String, String> requestData) {
+		StringBuilder sb = new StringBuilder();
+		boolean setResult = false;
+
+		Map<String, Object> orderInfo = sqlSession.selectOne(NAME_SPACE + "GET_ORDER_INFO", requestData);
+		requestData.put("P_PRODUCT_ORDER_ID", orderInfo.get("PRODUCT_ORDER_ID").toString());
 		
 		String authToken = naverStore.getAuthToken(loginInfo);
 		
-		if(CommonUtil.isNullOrEmpty(authToken)) {
-			requestData.put("P_RESULT", naverStore.setTrackingNumber(authToken, requestData) ? "T" : "F");
+		if(!CommonUtil.isNullOrEmpty(authToken)) {
+			setResult = naverStore.setTrackingNumber(authToken, requestData);
+			requestData.put("P_RESULT", setResult ? "T" : "F");
 		} else {
 			LOG.error("setTrackingNumber Error :: authToken 발급 실패");
 			requestData.put("P_RESULT", "F");
 		}
-		
+		sb.append(orderInfo.get("ORDERER_NAME"));
+		sb.append("(");
+		sb.append(orderInfo.get("RECEIVER_NAME"));
+		sb.append(") : ");
+		sb.append(setResult ? "송장 등록 완료" : "송장 등록 실패");
+		sb.append("[");
+		sb.append(requestData.get("TRACKING_NUMBER"));
+		sb.append("]\n");
+		return sb.toString();
 	}
 	
 	public void updateOrderInfo(Map<String, String> requestData) {
