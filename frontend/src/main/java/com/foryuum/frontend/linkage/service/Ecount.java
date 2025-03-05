@@ -1,24 +1,19 @@
 package com.foryuum.frontend.linkage.service;
 
-import java.time.Duration;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import com.foryuum.frontend.common.service.WebDriverConfig;
+import com.foryuum.frontend.common.util.LinkageUtil;
+import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.foryuum.frontend.common.service.WebDriverConfig;
-import com.foryuum.frontend.common.util.LinkageUtil;
+import java.time.Duration;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class Ecount {
 
@@ -216,7 +211,7 @@ public class Ecount {
 		    		String trackingNum = tds.get(2).findElement(By.tagName("span")).getText();
 		    		
 		    		Map<String, String> map = new HashMap<String, String>();
-	    			map.put("P_RESULT", trackingNum.matches("\\d+") ? "" : "F");
+	    			map.put("P_RESULT", trackingNum.matches("\\d+") ? "T" : "F");
 		    		map.put("P_SHIPPING_DT", shippingDt);
 		    		map.put("P_RECEIVER_NAME", receiverName);
 		    		map.put("TRACKING_NUMBER", trackingNum);

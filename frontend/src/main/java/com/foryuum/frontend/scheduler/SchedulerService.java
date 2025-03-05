@@ -1,7 +1,6 @@
 package com.foryuum.frontend.scheduler;
 
 import com.foryuum.frontend.common.ComConstant;
-import com.foryuum.frontend.common.util.CommonUtil;
 import com.foryuum.frontend.item.service.ItemService;
 import com.foryuum.frontend.linkage.service.CoolSMS;
 import com.foryuum.frontend.linkage.service.Ecount;
@@ -13,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.ZoneOffset;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -46,43 +46,34 @@ public class SchedulerService {
 				ecount.login(ecountLoginInfo);
 				
 				List<Map<String, String>> returnData = ecount.getTrackingNumber();
-				
+
 				if(!returnData.isEmpty()) {
+					HashMap<String, String> resultMap = new HashMap<String, String>();
 					StringBuilder sb = new StringBuilder();
-					sb.append("■ ");
-					sb.append(today);
-					sb.append(" 송장 처리 결과 ■\n");
+					int totalCnt = returnData.size();
+					int successCnt = 0;
+
 					Map<String, Object> naverLoginInfo = itemService.getLoginInfo("olaf", ComConstant.MODERN);
 					for(Map<String, String> requestData : returnData) {
-						if(CommonUtil.isNullOrEmpty(requestData.get("P_RESULT"))) {
-							String resultMsg = itemService.setTrackingNumber(naverLoginInfo, requestData);
-							sb.append(resultMsg);
+						if(requestData.get("P_RESULT").equals("T")) {
+							successCnt++;
 						}
+						String resultMsg = itemService.setTrackingNumber(naverLoginInfo, requestData);
+						sb.append(resultMsg);
 						itemService.updateOrderInfo(requestData);
 					}
 
-					coolSMS.sendLms(sb.toString());
+					resultMap.put("DATE", today.toString());
+					resultMap.put("TOTAL_COUNT", String.valueOf(totalCnt));
+					resultMap.put("SUCCEESS_COUNT", String.valueOf(successCnt));
+					resultMap.put("FAIL_COUNT", String.valueOf(totalCnt - successCnt));
+					resultMap.put("RESULT", sb.toString());
+
+					coolSMS.sendKakaoTalk(resultMap);
 					checkTrackingNumberFlag = false;
 				}
 			}
 		}
 
 	}
-	
-	@Scheduled(cron = "0 0 * * * *")
-	private void clearChromeFiles() { 
-		if(RUN_MODE.equals(ComConstant.REAL)) {
-			try {
-				String scriptPath = "/usr/local/apache-tomcat-10.1.35/bin/clean_tmp.sh";
-				
-				ProcessBuilder processBuilder = new ProcessBuilder(scriptPath);
-				Process process = processBuilder.start();
-				
-				process.waitFor();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-	}
-	
 }

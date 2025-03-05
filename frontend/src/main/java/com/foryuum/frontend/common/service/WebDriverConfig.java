@@ -13,18 +13,18 @@ public class WebDriverConfig {
 	
 	private static String driverPath;
 
-	@Value("#{environment['driverPath']}")
-	private void setDriverPath (String path) {
-		driverPath = path;
-	}
-	
     public static WebDriver webDriver() {
         System.setProperty("webdriver.chrome.driver", driverPath);
 
         ChromeOptions options = new ChromeOptions();
-//        options.addArguments("--headless");    // 헤드리스 모드 활성화
-//        options.addArguments("--no-sandbox");  // 보안 모드 비활성화 
-//        options.addArguments("--disable-dev-shm-usage");  // DevTools 프로토콜 비활성화
+        options.addArguments("--headless");    // 헤드리스 모드 활성화
+        options.addArguments("--no-sandbox");  // 보안 모드 비활성화
+        options.addArguments("--disable-dev-shm-usage");  // DevTools 프로토콜 비활성화
         return new ChromeDriver(options);
     }
+	
+	@Value("#{environment['driverPath']}")
+	private void setDriverPath (String path) {
+		driverPath = path;
+	}
 }

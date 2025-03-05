@@ -1,16 +1,5 @@
 package com.foryuum.frontend.item.service;
 
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
-import org.mybatis.spring.SqlSessionTemplate;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Service;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.foryuum.frontend.common.ComConstant;
 import com.foryuum.frontend.common.util.CommonUtil;
@@ -21,9 +10,18 @@ import com.foryuum.frontend.linkage.service.Ecount;
 import com.foryuum.frontend.linkage.service.Feel;
 import com.foryuum.frontend.linkage.service.NaverStore;
 import com.foryuum.frontend.linkage.service.Shuline;
-
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpSession;
+import org.mybatis.spring.SqlSessionTemplate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
+
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service("itemService")
 public class ItemService {
@@ -192,7 +190,7 @@ public class ItemService {
 		sb.append("(");
 		sb.append(orderInfo.get("RECEIVER_NAME"));
 		sb.append(") : ");
-		sb.append(setResult ? "송장 등록 완료" : "송장 등록 실패");
+		sb.append(setResult ? "송장 등록 성공" : "송장 등록 실패");
 		sb.append("[");
 		sb.append(requestData.get("TRACKING_NUMBER"));
 		sb.append("]\n");
