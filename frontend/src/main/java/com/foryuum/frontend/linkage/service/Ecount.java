@@ -160,22 +160,22 @@ public class Ecount {
 	    WebElement clickElement = wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("tr[data-key='" + idx + "'] td[data-columnid='" + columnId + "'] span")));
 	    
 	    try {
-	        clickElement.click();
-	        processInput(idx, columnId, value);
+			jsExecutor.executeScript("arguments[0].click();", clickElement);
+			processInput(idx, columnId, value);
 	    } catch (Exception we) {
-	        LOG.error("WebElement Click Exception :: {}", columnId);
+	        LOG.error("JavaScript Click Exception :: {}", columnId);
 
 	        try {
-	            actions.moveToElement(clickElement).click().perform();
-	            processInput(idx, columnId, value);
+				clickElement.click();
+				processInput(idx, columnId, value);
 	        } catch (Exception ae) {
-	            LOG.error("Action Click Exception :: {}", columnId);
+	            LOG.error("WebElement Click Exception :: {}", columnId);
 	            
 	            try {
-	                jsExecutor.executeScript("arguments[0].click();", clickElement);
-	                processInput(idx, columnId, value);
+					actions.moveToElement(clickElement).click().perform();
+					processInput(idx, columnId, value);
 	            } catch (Exception je) {
-	                LOG.error("JavaScript Click Exception :: {}", columnId);
+	                LOG.error("Action Click Exception :: {}", columnId);
 	                throw new NoSuchElementException("can't find input :: " + columnId, je);
 	            }
 	        }

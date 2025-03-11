@@ -30,7 +30,7 @@ public class SchedulerService {
 	
 	@Scheduled(cron = "0 */5 * * * *", zone="Asia/Seoul")
 	private void searchTrackingNumberProcess() {
-		if(RUN_MODE.equals(ComConstant.REAL)) {
+		if(RUN_MODE.equals(ComConstant.DEV)) {
 			LocalDate today = LocalDate.now(ZoneOffset.ofHours(9)); 
 			
 			if (!today.equals(lastExecutedDate)) {
@@ -55,11 +55,12 @@ public class SchedulerService {
 
 					Map<String, Object> naverLoginInfo = itemService.getLoginInfo("olaf", ComConstant.MODERN);
 					for(Map<String, String> requestData : returnData) {
+						String resultMsg = itemService.setTrackingNumber(naverLoginInfo, requestData);
+						sb.append(resultMsg);
+
 						if(requestData.get("P_RESULT").equals("T")) {
 							successCnt++;
 						}
-						String resultMsg = itemService.setTrackingNumber(naverLoginInfo, requestData);
-						sb.append(resultMsg);
 						itemService.updateOrderInfo(requestData);
 					}
 
@@ -69,9 +70,11 @@ public class SchedulerService {
 					resultMap.put("FAIL_COUNT", String.valueOf(totalCnt - successCnt));
 					resultMap.put("RESULT", sb.toString());
 
-					coolSMS.sendKakaoTalk(resultMap);
+//					coolSMS.sendKakaoTalk(resultMap);
+					LOG.info("송장번호 확인 결과 :: {}", resultMap);
 					checkTrackingNumberFlag = false;
 				}
+				LOG.info("searchTrackingNumberProcess End!");
 			}
 		}
 

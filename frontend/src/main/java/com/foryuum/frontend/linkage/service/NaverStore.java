@@ -1,46 +1,31 @@
 package com.foryuum.frontend.linkage.service;
 
-import java.nio.charset.StandardCharsets;
-import java.time.Instant;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
-import java.util.Base64;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.commons.lang3.StringUtils;
-import org.mindrot.jbcrypt.BCrypt;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.http.converter.FormHttpMessageConverter;
-import org.springframework.stereotype.Service;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
-import org.springframework.web.client.RestTemplate;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.foryuum.frontend.common.ComConstant;
 import com.foryuum.frontend.common.util.CommonUtil;
 import com.foryuum.frontend.common.util.LinkageUtil;
 import com.foryuum.frontend.item.service.ItemService;
-import com.foryuum.frontend.linkage.vo.Delivery;
-import com.foryuum.frontend.linkage.vo.NaverResponse;
-import com.foryuum.frontend.linkage.vo.NaverShippingInfo;
-import com.foryuum.frontend.linkage.vo.Order;
-import com.foryuum.frontend.linkage.vo.ProductOrder;
-
+import com.foryuum.frontend.linkage.vo.*;
 import jakarta.annotation.Resource;
 import net.sf.json.JSONObject;
+import org.apache.commons.lang3.StringUtils;
+import org.mindrot.jbcrypt.BCrypt;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.*;
+import org.springframework.http.converter.FormHttpMessageConverter;
+import org.springframework.stereotype.Service;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.RestTemplate;
+
+import java.nio.charset.StandardCharsets;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 
 @Service("naverStore")
 public class NaverStore {
@@ -229,11 +214,14 @@ public class NaverStore {
 			ResponseEntity<String> response = restTemplate.exchange(
 					"https://api.commerce.naver.com/external/v1/pay-order/seller/product-orders/dispatch", HttpMethod.POST, entity, String.class);
 
+			LOG.info("Naver 연동 결과 : {}", response.getStatusCode());
 			if (response.getStatusCode() == HttpStatus.OK) {
 		        ObjectMapper objectMapper = new ObjectMapper();
 		        JsonNode successProductOrderIds = objectMapper.readTree(response.getBody())
 		                .path("data").path("successProductOrderIds");
 
+				LOG.info("Naver Response : {}", response.getBody());
+				LOG.info("Naver Response : {}", successProductOrderIds.toString());
 		        result = successProductOrderIds.isArray() && !successProductOrderIds.isEmpty();
 			}
 

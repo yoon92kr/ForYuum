@@ -59,6 +59,114 @@
 	    function closeAppendModal() {
 	    	$('#appendModal').hide();
 	    }
+
+		function getItemInfo() {
+			if(isNull($("#i_search_no").val())) {
+				swal({title: "상품번호를 입력하세요.", closeOnClickOutside:false});
+				return;
+			}
+
+			var searchNo = $("#i_search_no").val().trim();
+
+			if(searchNo.length == 10) {
+				getItemInfoByItemNo(searchNo)
+			} else if(searchNo.length == 16) {
+				getItemInfoByItemOrderNo(searchNo)
+			} else {
+				swal({title: "상품번호/상품주문번호를 확인하세요.", closeOnClickOutside:false});
+			}
+		}
+
+		/* 상품번호 기반 조회 */
+		function getItemInfoByItemNo(searchNo) {
+			mobileLoading();
+
+			$.ajax({
+				method : "POST",
+				url : "/item/getItemInfoByItemNo.do",
+				data : {
+					P_ITEM_NO  : searchNo,
+					P_COMPANY_NAME : $("#i_company_name").val()
+				},
+				dataType : "JSON",
+				success : sucGetItemInfo,
+				error : function(xhr, status, error) {
+					mobileLoadingEnd();
+					commonHandleError(xhr, status, error,  "상품 정보 조회중 오류가 발생 하였습니다.");
+				}
+			});
+		}
+
+		/* 주문번호 기반 조회 */
+		function getItemInfoByItemOrderNo(searchNo) {
+			mobileLoading();
+
+			$.ajax({
+				method : "POST",
+				url : "/item/getItemInfoByItemOrderNo.do",
+				data : {
+					P_ITEM_ORDER_NO  : searchNo,
+					P_COMPANY_NAME : $("#i_company_name").val()
+				},
+				dataType : "JSON",
+				success : sucGetItemInfoByItemOrderNo,
+				error : function(xhr, status, error) {
+					mobileLoadingEnd();
+					commonHandleError(xhr, status, error,  "상품 정보 조회중 오류가 발생 하였습니다.");
+				}
+			});
+		}
+
+		function sucGetItemInfoByItemNo(data) {
+			var itemInfo = data.returnData;
+			if(isNotNull(itemInfo)) {
+				if (!vendorList.includes(itemInfo.VENDOR_NAME)) {
+					swal({title: "조회된 상품 정보가 없습니다.", closeOnClickOutside:false});
+				} else {
+					$("#i_vendor_item_name").val(itemInfo.VENDOR_ITEM_NAME);
+					$("#i_vendor_price").val(convertNumber(itemInfo.VENDOR_PRICE));
+					$("#i_count").val(1);
+					$('#i_vendor_name').val(itemInfo.VENDOR_NAME).change();
+					$("#i_vendor_i_vendor_item_optionname").val('');
+				}
+			} else {
+				swal({title: "조회된 상품 정보가 없습니다.", closeOnClickOutside:false});
+			}
+			mobileLoadingEnd();
+		}
+
+		function sucGetItemInfoByItemOrderNo(data) {
+			var itemInfo = data.returnData.RESULT_VALUE;
+			if(isNotNull(itemInfo)) {
+				if (!vendorList.includes(itemInfo.VENDOR_NAME)) {
+					swal({title: "조회된 상품 정보가 없습니다.", closeOnClickOutside:false});
+				} else {
+					productOrderId = $("#i_search_no").val().trim();
+					$("#i_vendor_item_name").val(itemInfo.VENDOR_ITEM_NAME);
+					$("#i_vendor_price").val(convertNumber(itemInfo.VENDOR_PRICE));
+					$("#i_count").val(itemInfo.ORDER_COUNT);
+					$('#i_vendor_name').val(itemInfo.VENDOR_NAME).change();
+					$("#i_vendor_item_option").val(itemInfo.ORDER_ITEM_OPTION);
+
+					$("#i_orderer_name").val(itemInfo.ORDERER_NAME);
+					$("#i_orderer_id").val(itemInfo.ORDERER_ID);
+					$("#i_order_date").val(itemInfo.ORDER_DATE);
+
+					$("#i_name").val(itemInfo.RECEIVER_NAME);
+					$("#i_address").val(itemInfo.RECEIVER_ADDRES);
+					$("#i_mobile").val(itemInfo.RECEIVER_MOBILE);
+					$("#i_note").val(itemInfo.SHIPPING_MEMO);
+
+					if(data.returnData.RESULT == true) {
+						swal({title: data.returnData.TITLE, text: data.returnData.TEXT, closeOnClickOutside:false});
+					}
+				}
+			} else {
+				swal({title: "조회된 상품 정보가 없습니다.", closeOnClickOutside:false});
+			}
+
+			mobileLoadingEnd();
+		}
 		
 	</script>
 	<body>	

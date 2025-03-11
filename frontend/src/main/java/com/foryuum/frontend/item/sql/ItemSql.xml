@@ -38,7 +38,7 @@
 	         	#{item.P_NAME},
 		        CONVERT_TZ(NOW(3), @@GLOBAL.TIME_ZONE, 'ASIA/SEOUL'), 
 		        DATE_FORMAT(CONVERT_TZ(DATE_ADD(NOW(3), INTERVAL 1 DAY), @@GLOBAL.TIME_ZONE, 'ASIA/SEOUL'), '%Y/%m/%d'),
-		        'F'
+		        'S'
 	        )
 	    </foreach>
         ON DUPLICATE KEY UPDATE
