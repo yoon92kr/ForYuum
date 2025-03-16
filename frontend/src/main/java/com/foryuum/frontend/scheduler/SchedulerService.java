@@ -70,7 +70,7 @@ public class SchedulerService {
 					resultMap.put("FAIL_COUNT", String.valueOf(totalCnt - successCnt));
 					resultMap.put("RESULT", sb.toString());
 
-//					coolSMS.sendKakaoTalk(resultMap);
+					coolSMS.sendKakaoTalk(resultMap);
 					LOG.info("송장번호 확인 결과 :: {}", resultMap);
 					checkTrackingNumberFlag = false;
 				}
